@@ -1,10 +1,8 @@
-package com.dev9.mvnrunner.event;
+package com.dev9.mvn.watcher.event;
 
-import com.dev9.mvnrunner.event.DirectoryEventWatcher;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
 /**

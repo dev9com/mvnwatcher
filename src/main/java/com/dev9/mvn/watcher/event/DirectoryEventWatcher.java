@@ -1,6 +1,7 @@
-package com.dev9.mvnrunner.event;
+package com.dev9.mvn.watcher.event;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,4 +16,5 @@ public interface DirectoryEventWatcher {
     boolean isRunning();
 
     void stop();
+
 }

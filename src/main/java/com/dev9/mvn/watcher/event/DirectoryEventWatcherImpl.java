@@ -1,4 +1,4 @@
-package com.dev9.mvnrunner.event;
+package com.dev9.mvn.watcher.event;
 
 import com.google.common.eventbus.EventBus;
 

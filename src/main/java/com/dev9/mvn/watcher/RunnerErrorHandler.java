@@ -1,4 +1,4 @@
-package com.dev9.mvnrunner;
+package com.dev9.mvn.watcher;
 
 
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
