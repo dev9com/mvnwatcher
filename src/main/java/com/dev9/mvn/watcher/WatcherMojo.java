@@ -29,7 +29,7 @@ import java.io.IOException;
  *
  * @goal watch
  */
-@Mojo( name = "watcher")
+@Mojo(name = "Watcher")
 public class WatcherMojo
         extends AbstractMojo {
     /**
