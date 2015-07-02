@@ -2,6 +2,7 @@ package com.dev9.mvnwatcher;
 
 import com.dev9.mvnwatcher.event.DirectoryEventWatcherImpl;
 import com.dev9.mvnwatcher.event.FileChangeSubscriber;
+import com.dev9.mvnwatcher.event.MvnRunner;
 import com.google.common.eventbus.EventBus;
 
 import java.io.IOException;
@@ -29,11 +30,14 @@ public class ConsoleApp {
         eventBus = new EventBus();
         dirWatcher = new DirectoryEventWatcherImpl(eventBus, sourcePath);
         dirWatcher.start();
-        subscriber = new FileChangeSubscriber(dirWatcher, projectPath);
+        MvnRunner runner = new MvnRunner(projectPath);
+        subscriber = new FileChangeSubscriber(dirWatcher, runner);
         eventBus.register(subscriber);
     }
 
-    /** Set to false to terminate */
+    /**
+     * Set to false to terminate
+     */
     public boolean terminate = false;
 
     public void waitForCancel() {
@@ -52,7 +56,7 @@ public class ConsoleApp {
         String cwd = Paths.get("").toAbsolutePath().toString();
 
         Path projectPath = Paths.get(cwd, "src/test/resources/sample-project/");
-        Path sourcePath = Paths.get(cwd,"src/test/resources/sample-project/src/main/java");
+        Path sourcePath = Paths.get(cwd, "src/test/resources/sample-project/src/main/java");
 
         ConsoleApp runner = null;
 

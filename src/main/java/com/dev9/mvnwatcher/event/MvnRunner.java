@@ -2,29 +2,51 @@ package com.dev9.mvnwatcher.event;
 
 import com.dev9.mvnwatcher.RunnerErrorHandler;
 import com.dev9.mvnwatcher.RunnerOutputHandler;
-import com.google.common.eventbus.Subscribe;
 import org.apache.maven.shared.invoker.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 
+public class MvnRunner {
 
-public class FileChangeSubscriber implements PathEventSubscriber {
-
-    DirectoryEventWatcher dirWatcher;
     Path projectPath;
 
-    public FileChangeSubscriber(DirectoryEventWatcher dirWatcher, Path projectPath) {
-        this.dirWatcher = dirWatcher;
+    public MvnRunner(Path projectPath)
+    {
         this.projectPath = projectPath;
     }
 
-    @Subscribe
-    @Override
-    public void handlePathEvents(PathEventContext pathEventContext) {
+
+    public void stopBuild()
+    {
+
+    }
+
+
+    public void startBuildWithProcessBuilder()
+    {
+
+        List<String> params = java.util.Arrays.asList("mvn", "spring-boot:run");
+        ProcessBuilder b = new ProcessBuilder(params);
+        b.directory(projectPath.toFile());
+
+        Path log = Paths.get("", "target", "mvnrunner.log");
+
+        b.redirectErrorStream(true);
+        b.redirectOutput(ProcessBuilder.Redirect.appendTo(log.toFile()));
+        try {
+            Process p = b.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startBuildWithInvoker()
+    {
 
         InvocationRequest request = new DefaultInvocationRequest();
 
@@ -52,19 +74,6 @@ public class FileChangeSubscriber implements PathEventSubscriber {
                 throw new IllegalStateException("Build failed.");
             }
 
-        for (PathEvent evt : pathEventContext.getEvents()) {
-            System.out.println("@" + evt.getType().name() + ">" + evt.getEventTarget().getFileName());
-
-            if (evt.getType().name().compareTo("ENTRY_CREATE") == 0) {
-                if (Files.isDirectory(evt.getEventTarget()))
-                    try {
-                        dirWatcher.stop();
-                        dirWatcher.start();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-            }
-        }
     }
 
 }
