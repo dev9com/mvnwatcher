@@ -30,7 +30,7 @@ public class FileChangeSubscriber implements PathEventSubscriber {
 
         request.setBaseDirectory(projectPath.toFile());
         request.setPomFile(new File(projectPath.toFile(), "pom.xml"));
-        request.setGoals(Collections.singletonList("compiler:compile jar:jar spring-boot:run"));
+        request.setGoals(Collections.singletonList("spring-boot:run"));
         request.setErrorHandler(new RunnerErrorHandler());
         request.setInteractive(false);
         //request.setOffline(true);
