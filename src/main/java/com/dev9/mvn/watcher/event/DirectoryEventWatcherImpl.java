@@ -15,10 +15,7 @@ import java.util.concurrent.TimeUnit;
 import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: bbejeck
- * Date: 2/15/12
- * Time: 10:56 PM
+ * Based on code written originally by bbejeck
  */
 
 public class DirectoryEventWatcherImpl implements DirectoryEventWatcher {
@@ -103,11 +100,15 @@ public class DirectoryEventWatcherImpl implements DirectoryEventWatcher {
         return watchService;
     }
 
+    public void addPath(Path path) throws IOException {
+        System.out.println("Watching: " + path.toAbsolutePath());
+        path.register(watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+    }
+
     private class WatchServiceRegisteringVisitor extends SimpleFileVisitor<Path> {
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-            System.out.println("Watching: " + dir.toAbsolutePath());
-            dir.register(watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+            addPath(dir);
             return FileVisitResult.CONTINUE;
         }
     }
