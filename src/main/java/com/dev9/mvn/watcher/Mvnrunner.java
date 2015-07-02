@@ -48,8 +48,10 @@ public class Mvnrunner {
 
     public static void main(String[] args) {
 
-        Path projectPath = Paths.get("src/mvnrunnner/src/test/resources/sample-project/");
-        Path sourcePath = Paths.get("src/mvnrunnner/src/test/resources/sample-project/src/main/java");
+        String cwd = Paths.get("").toAbsolutePath().toString();
+
+        Path projectPath = Paths.get(cwd, "src/test/resources/sample-project/");
+        Path sourcePath = Paths.get(cwd,"src/test/resources/sample-project/src/main/java");
 
         Mvnrunner runner = null;
 
