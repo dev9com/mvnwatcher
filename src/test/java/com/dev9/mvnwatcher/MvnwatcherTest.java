@@ -1,24 +1,26 @@
 package com.dev9.mvnwatcher;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class MvnwatcherTest {
 
     @Test
-    public void simpleBootTest() throws IOException {
+    public void simpleMojoBootTest() throws IOException, MojoExecutionException {
 
         String cwd = Paths.get("").toAbsolutePath().toString();
 
-        Path projectPath = Paths.get(cwd, "target/test-classes/sample-project/");
-        Path sourcePath = Paths.get(cwd, "target/test-classes/sample-project/src/main/java");
+        WatcherMojo mojo = new WatcherMojo();
 
-        ConsoleApp runner = null;
+        mojo.basedir = Paths.get(cwd, "target/test-classes/sample-project/").toFile();
+        mojo.sourceDirectory = Paths.get(cwd, "target/test-classes/sample-project/src/main/java").toFile();
 
-        runner = new ConsoleApp(sourcePath, projectPath);
-        runner.startUpWatcher();
+        mojo.terminate = true;
+        mojo.execute();
+
     }
+
 }

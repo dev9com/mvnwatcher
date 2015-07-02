@@ -16,6 +16,7 @@ package com.dev9.mvnwatcher;
  * limitations under the License.
  */
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -38,14 +39,22 @@ public class WatcherMojo
      * @parameter property="project.build.sourceDirectory" default-value="${project.build.sourceDirectory}"
      * @required
      */
-    private File sourceDirectory;
+    @VisibleForTesting
+    public File sourceDirectory;
 
     /**
      * @parameter default-value="${project.basedir}"
      * @readonly
      */
-    private File basedir;
+    @VisibleForTesting
+    public File basedir;
 
+
+    /**
+     * Defaults to false.  Set to true for WatcherMojo to self-terminate (useful for testing and...?)
+     */
+    @VisibleForTesting
+    public boolean terminate;
 
     public void execute()
             throws MojoExecutionException {
@@ -63,6 +72,8 @@ public class WatcherMojo
         try {
             runner = new ConsoleApp(sourceDirectory.toPath(), basedir.toPath());
             runner.startUpWatcher();
+            log.info("Starting watcher...");
+            runner.terminate = terminate;
         } catch (IOException e) {
             e.printStackTrace();
         }

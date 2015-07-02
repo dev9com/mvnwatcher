@@ -33,10 +33,12 @@ public class ConsoleApp {
         eventBus.register(subscriber);
     }
 
-    public void waitForCancel() {
-        boolean running = true;
+    /** Set to false to terminate */
+    public boolean terminate = false;
 
-        while (running) {
+    public void waitForCancel() {
+
+        while (!terminate) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
