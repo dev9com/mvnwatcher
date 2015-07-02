@@ -7,6 +7,8 @@ import com.google.common.eventbus.EventBus;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 public class Mvnrunner {
@@ -15,8 +17,8 @@ public class Mvnrunner {
     private final Path projectPath;
 
     public Mvnrunner(Path sourcePath, Path projectPath) {
-        this.sourcePath = sourcePath;
-        this.projectPath = projectPath;
+        this.sourcePath = Objects.requireNonNull(sourcePath);
+        this.projectPath = Objects.requireNonNull(projectPath);
     }
 
     private EventBus eventBus;
@@ -46,13 +48,13 @@ public class Mvnrunner {
 
     public static void main(String[] args) {
 
-        File projectPath = new File("src/mvnrunnner/src/test/resources/sample-project/");
-        File sourcePath = new File("src/mvnrunnner/src/test/resources/sample-project/src/main/java");
+        Path projectPath = Paths.get("src/mvnrunnner/src/test/resources/sample-project/");
+        Path sourcePath = Paths.get("src/mvnrunnner/src/test/resources/sample-project/src/main/java");
 
         Mvnrunner runner = null;
 
         try {
-            runner = new Mvnrunner(sourcePath.toPath(), projectPath.toPath());
+            runner = new Mvnrunner(sourcePath, projectPath);
             runner.startUpWatcher();
         } catch (IOException e) {
             e.printStackTrace();
