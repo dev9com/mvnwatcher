@@ -54,7 +54,7 @@ public class WatcherMojo
      * Defaults to false.  Set to true for WatcherMojo to self-terminate (useful for testing and...?)
      */
     @VisibleForTesting
-    public boolean terminate;
+    public boolean terminate = false;
 
     public void execute()
             throws MojoExecutionException {
