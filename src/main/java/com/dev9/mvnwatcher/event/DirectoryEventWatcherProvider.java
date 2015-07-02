@@ -1,4 +1,4 @@
-package com.dev9.mvn.watcher.event;
+package com.dev9.mvnwatcher.event;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;

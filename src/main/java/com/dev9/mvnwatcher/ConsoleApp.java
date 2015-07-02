@@ -1,22 +1,21 @@
-package com.dev9.mvn.watcher;
+package com.dev9.mvnwatcher;
 
-import com.dev9.mvn.watcher.event.DirectoryEventWatcherImpl;
-import com.dev9.mvn.watcher.event.FileChangeSubscriber;
+import com.dev9.mvnwatcher.event.DirectoryEventWatcherImpl;
+import com.dev9.mvnwatcher.event.FileChangeSubscriber;
 import com.google.common.eventbus.EventBus;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
-public class Mvnrunner {
+public class ConsoleApp {
 
     private final Path sourcePath;
     private final Path projectPath;
 
-    public Mvnrunner(Path sourcePath, Path projectPath) {
+    public ConsoleApp(Path sourcePath, Path projectPath) {
         this.sourcePath = Objects.requireNonNull(sourcePath);
         this.projectPath = Objects.requireNonNull(projectPath);
     }
@@ -53,10 +52,10 @@ public class Mvnrunner {
         Path projectPath = Paths.get(cwd, "src/test/resources/sample-project/");
         Path sourcePath = Paths.get(cwd,"src/test/resources/sample-project/src/main/java");
 
-        Mvnrunner runner = null;
+        ConsoleApp runner = null;
 
         try {
-            runner = new Mvnrunner(sourcePath, projectPath);
+            runner = new ConsoleApp(sourcePath, projectPath);
             runner.startUpWatcher();
         } catch (IOException e) {
             e.printStackTrace();

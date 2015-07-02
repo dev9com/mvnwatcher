@@ -1,7 +1,7 @@
-package com.dev9.mvn.watcher.event;
+package com.dev9.mvnwatcher.event;
 
-import com.dev9.mvn.watcher.RunnerErrorHandler;
-import com.dev9.mvn.watcher.RunnerOutputHandler;
+import com.dev9.mvnwatcher.RunnerErrorHandler;
+import com.dev9.mvnwatcher.RunnerOutputHandler;
 import com.google.common.eventbus.Subscribe;
 import org.apache.maven.shared.invoker.*;
 

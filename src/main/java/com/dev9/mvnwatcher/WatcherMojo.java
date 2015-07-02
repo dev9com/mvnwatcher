@@ -1,4 +1,4 @@
-package com.dev9.mvn.watcher;
+package com.dev9.mvnwatcher;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -58,10 +58,10 @@ public class WatcherMojo
             log.info("Found: " + sourceDirectory.getAbsolutePath());
         }
 
-        Mvnrunner runner = null;
+        ConsoleApp runner = null;
 
         try {
-            runner = new Mvnrunner(sourceDirectory.toPath(), basedir.toPath());
+            runner = new ConsoleApp(sourceDirectory.toPath(), basedir.toPath());
             runner.startUpWatcher();
         } catch (IOException e) {
             e.printStackTrace();
