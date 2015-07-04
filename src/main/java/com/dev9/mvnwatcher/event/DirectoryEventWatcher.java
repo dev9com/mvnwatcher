@@ -1,7 +1,6 @@
 package com.dev9.mvnwatcher.event;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 /**
  * Created by IntelliJ IDEA.
