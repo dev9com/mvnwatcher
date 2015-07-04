@@ -37,6 +37,10 @@ public class MvnRunner {
         monitor = new MvnMonitor(b);
 
         new Thread(monitor, "mvnmonitor").start();
+
+        Thread reaper = new Thread(new MvnTerminate(monitor), "mvnmonitor-reaper");
+
+        Runtime.getRuntime().addShutdownHook(reaper);
     }
 
     public void changeEvent() {
@@ -45,6 +49,21 @@ public class MvnRunner {
 
     public void stop() {
         monitor.shutdown = true;
+    }
+
+    private class MvnTerminate implements Runnable {
+
+        private MvnMonitor monitor;
+
+        MvnTerminate(MvnMonitor monitor) {
+            this.monitor = monitor;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Running hook...");
+            monitor.kill();
+        }
     }
 
     private class MvnMonitor implements Runnable {
@@ -79,7 +98,15 @@ public class MvnRunner {
 
                 try {
                     dirty = false;
-                    watchedProcess = config.start();
+
+                    if (watchedProcess == null) {
+                        watchedProcess = config.start();
+                        System.out.println("Started process (a) " + watchedProcess.toString());
+                    } else if (!watchedProcess.isAlive()) {
+                        watchedProcess = config.start();
+                        System.out.println("Started process (b) " + watchedProcess.toString());
+                    }
+
                 } catch (IOException e) {
                     lastError = e;
                 }
@@ -93,16 +120,26 @@ public class MvnRunner {
                     }
                 }
 
-                if (watchedProcess.isAlive()) {
-                    watchedProcess.destroy();
-                }
+                kill();
+
                 try {
                     statusCode = watchedProcess.exitValue();
                 } catch (IllegalThreadStateException e) {
                     lastError = e;
                 }
             }
+            kill();
         }
+
+        private void kill() {
+            if (watchedProcess != null)
+                if (watchedProcess.isAlive()) {
+                    watchedProcess.destroyForcibly();
+                    System.out.println("Killed " + watchedProcess.toString());
+                }
+
+        }
+
     }
 
 

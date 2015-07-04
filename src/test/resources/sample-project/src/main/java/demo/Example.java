@@ -11,7 +11,7 @@ public class Example {
 
     @RequestMapping("/")
     String home() {
-        return "Cool World!";
+        return "Cool World!" + new java.util.Date().toString();
     }
 
 }

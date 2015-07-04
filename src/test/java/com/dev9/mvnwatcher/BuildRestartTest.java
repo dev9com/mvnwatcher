@@ -1,5 +1,6 @@
 package com.dev9.mvnwatcher;
 
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -7,6 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class BuildRestartTest {
+
+    MvnRunner runner;
 
     @Test
     public void simpleBootTest() throws IOException, InterruptedException {
@@ -21,6 +24,12 @@ public class BuildRestartTest {
 
         Thread.sleep(3000);
 
+    }
+
+    @After
+    public void shutdown() {
+        if (runner != null)
+            runner.stop();
     }
 
 
