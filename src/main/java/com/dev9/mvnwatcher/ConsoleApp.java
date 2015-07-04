@@ -24,7 +24,6 @@ public class ConsoleApp {
 
         if (runner != null)
             runner.waitForCancel();
-
     }
 
 }

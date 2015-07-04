@@ -1,6 +1,5 @@
 package com.dev9.mvnwatcher;
 
-import com.dev9.mvnwatcher.event.MvnRunner;
 import org.junit.Test;
 
 import java.io.IOException;
