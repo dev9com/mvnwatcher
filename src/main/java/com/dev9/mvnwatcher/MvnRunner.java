@@ -57,7 +57,7 @@ public class MvnRunner {
             this.config = config;
         }
 
-        Exception lastError;
+        Exception lastError = null;
 
         public boolean dirty = true;
 
@@ -67,6 +67,13 @@ public class MvnRunner {
 
         @Override
         public void run() {
+
+            Exception lastNotifiedException = null;
+            if (lastError != lastNotifiedException) {
+                lastError = lastNotifiedException;
+                if (lastError != null)
+                    System.err.println(lastError.getMessage());
+            }
 
             while (!shutdown) {
 
@@ -89,8 +96,11 @@ public class MvnRunner {
                 if (watchedProcess.isAlive()) {
                     watchedProcess.destroy();
                 }
-
-                statusCode = watchedProcess.exitValue();
+                try {
+                    statusCode = watchedProcess.exitValue();
+                } catch (IllegalThreadStateException e) {
+                    lastError = e;
+                }
             }
         }
     }
