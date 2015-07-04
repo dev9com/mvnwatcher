@@ -1,5 +1,6 @@
 package com.dev9.mvnwatcher.event;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.eventbus.EventBus;
 
 import java.io.IOException;
@@ -50,8 +51,8 @@ public class DirectoryEventWatcherImpl implements DirectoryEventWatcher {
         keepWatching = false;
     }
 
-    //Used for testing purposes
-    Integer getEventCount() {
+    @VisibleForTesting
+    public Integer getEventCount() {
         try {
             return watchTask.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -66,6 +67,8 @@ public class DirectoryEventWatcherImpl implements DirectoryEventWatcher {
 
             @Override
             public Integer call() throws Exception {
+
+                // Loop to keep watching until shutdown
                 while (keepWatching) {
                     WatchKey watchKey = watchService.poll(1, TimeUnit.SECONDS);
                     if (watchKey != null) {
@@ -80,6 +83,10 @@ public class DirectoryEventWatcherImpl implements DirectoryEventWatcher {
                         eventBus.post(pathEvents);
                     }
                 }
+
+                // Fell out of the watch loop, shut down the service.
+                watchService.close();
+
                 return totalEventCount;
             }
         });
