@@ -39,6 +39,7 @@ public class MvnWatcher {
         runner = new MvnRunner(projectPath);
         subscriber = new FileChangeSubscriber(dirWatcher, runner);
         eventBus.register(subscriber);
+        runner.start();
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.dev9.mvnwatcher;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +23,7 @@ public class MvnRunner {
 
     private MvnMonitor monitor;
 
-    public void startBuildWithProcessBuilder() {
+    public void start() {
 
         List<String> params = java.util.Arrays.asList("mvn", "spring-boot:run");
         ProcessBuilder b = new ProcessBuilder(params);
@@ -32,10 +31,8 @@ public class MvnRunner {
 
         Path log = Paths.get("", "target", "mvnrunner.log");
 
-        ByteArrayOutputStream bOutput = new ByteArrayOutputStream(100000);
-
         b.redirectErrorStream(true);
-        b.redirectOutput(bOutput);
+        b.redirectOutput(ProcessBuilder.Redirect.appendTo(log.toFile()));
 
         monitor = new MvnMonitor(b);
 
@@ -72,11 +69,6 @@ public class MvnRunner {
         public void run() {
 
             while (!shutdown) {
-                try {
-                    this.wait(1000);
-                } catch (InterruptedException e) {
-                    lastError = e;
-                }
 
                 try {
                     dirty = false;

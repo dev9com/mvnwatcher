@@ -17,7 +17,7 @@ public class BuildRestartTest {
 
         MvnRunner runner = new MvnRunner(projectPath);
 
-        runner.startBuildWithProcessBuilder();
+        runner.start();
 
         Thread.sleep(3000);
 
