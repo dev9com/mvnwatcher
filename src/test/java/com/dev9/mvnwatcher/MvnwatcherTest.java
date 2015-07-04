@@ -15,9 +15,9 @@ public class MvnwatcherTest {
         Path projectPath = Paths.get(cwd, "target/test-classes/sample-project/");
         Path sourcePath = Paths.get(cwd, "target/test-classes/sample-project/src/main/java");
 
-        ConsoleApp runner = null;
+        MvnWatcher runner = null;
 
-        runner = new ConsoleApp(sourcePath, projectPath);
+        runner = new MvnWatcher(sourcePath, projectPath);
 
         runner.startUpWatcher();
     }

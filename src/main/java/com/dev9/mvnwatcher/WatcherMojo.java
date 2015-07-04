@@ -67,10 +67,10 @@ public class WatcherMojo
             log.info("Found: " + sourceDirectory.getAbsolutePath());
         }
 
-        ConsoleApp runner = null;
+        MvnWatcher runner = null;
 
         try {
-            runner = new ConsoleApp(sourceDirectory.toPath(), basedir.toPath());
+            runner = new MvnWatcher(sourceDirectory.toPath(), basedir.toPath());
             runner.startUpWatcher();
             log.info("Starting watcher...");
             runner.terminate = terminate;

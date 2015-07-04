@@ -7,16 +7,15 @@ import com.google.common.eventbus.EventBus;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
-public class ConsoleApp {
+public class MvnWatcher {
 
     private final Path sourcePath;
     private final Path projectPath;
 
-    public ConsoleApp(Path sourcePath, Path projectPath) {
+    public MvnWatcher(Path sourcePath, Path projectPath) {
         this.sourcePath = Objects.requireNonNull(sourcePath);
         this.projectPath = Objects.requireNonNull(projectPath);
     }
@@ -49,27 +48,6 @@ public class ConsoleApp {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static void main(String[] args) {
-
-        String cwd = Paths.get("").toAbsolutePath().toString();
-
-        Path projectPath = Paths.get(cwd, "src/test/resources/sample-project/");
-        Path sourcePath = Paths.get(cwd, "src/test/resources/sample-project/src/main/java");
-
-        ConsoleApp runner = null;
-
-        try {
-            runner = new ConsoleApp(sourcePath, projectPath);
-            runner.startUpWatcher();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (runner != null)
-            runner.waitForCancel();
-
     }
 
 }
