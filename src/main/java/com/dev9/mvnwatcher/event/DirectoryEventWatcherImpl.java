@@ -70,7 +70,7 @@ public class DirectoryEventWatcherImpl implements DirectoryEventWatcher {
 
                 // Loop to keep watching until shutdown
                 while (keepWatching) {
-                    WatchKey watchKey = watchService.poll(1, TimeUnit.SECONDS);
+                    WatchKey watchKey = watchService.poll(500, TimeUnit.MILLISECONDS);
                     if (watchKey != null) {
                         List<WatchEvent<?>> events = watchKey.pollEvents();
                         Path watched = (Path) watchKey.watchable();
