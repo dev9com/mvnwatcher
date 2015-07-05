@@ -20,10 +20,15 @@ public class FileChangeSubscriber implements PathEventSubscriber {
     @Override
     public void handlePathEvents(PathEventContext pathEventContext) {
 
-        runner.changeEvent();
 
         for (PathEvent evt : pathEventContext.getEvents()) {
-            System.out.println("@" + evt.getType().name() + ">" + evt.getEventTarget().getFileName());
+
+            if (evt.getEventTarget().getFileName().toString().indexOf(".") == 0) {
+                System.out.println("Ignoring change to path entry with a .");
+            } else {
+                System.out.println("Noticed " + evt.getType().name() + " to " + evt.getEventTarget().getFileName());
+                runner.changeEvent();
+            }
 
             //TODO add newly created directories to monitoring
             //TODO remove deleted directories from monitoring
