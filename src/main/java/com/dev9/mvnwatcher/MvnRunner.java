@@ -3,6 +3,7 @@ package com.dev9.mvnwatcher;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -23,18 +24,34 @@ public class MvnRunner {
 
     private MvnMonitor monitor;
 
-    public void start() {
 
-        List<String> params = java.util.Arrays.asList("mvn", "spring-boot:run");
+    private ProcessBuilder getPB(List<String> params, Path directory, String logFile) {
         ProcessBuilder b = new ProcessBuilder(params);
-        b.directory(projectPath.toFile());
+        b.directory(directory.toFile());
 
-        Path log = Paths.get("", "target", "mvnrunner.log");
+        Path log = Paths.get(projectPath.toAbsolutePath().toString(), "target", logFile);
 
         b.redirectErrorStream(true);
         b.redirectOutput(ProcessBuilder.Redirect.appendTo(log.toFile()));
 
-        monitor = new MvnMonitor(b);
+        return b;
+    }
+
+    public void start() {
+
+        List<ProcessBuilder> configs = new ArrayList<>();
+
+        ProcessBuilder pb1 = getPB(java.util.Arrays.asList(
+                "mvn", "resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"), projectPath, "mvnrunner.log");
+
+        Path targetDir = Paths.get(projectPath.toAbsolutePath().toString(), "target");
+
+        ProcessBuilder pb2 = getPB(java.util.Arrays.asList("java", "-jar", "demo-0.0.1-SNAPSHOT.jar"), targetDir, "app.log");
+
+        configs.add(pb1);
+        configs.add(pb2);
+
+        monitor = new MvnMonitor(configs);
 
         new Thread(monitor, "mvnmonitor").start();
 
@@ -68,11 +85,11 @@ public class MvnRunner {
 
     private class MvnMonitor implements Runnable {
 
-        private ProcessBuilder config;
+        private List<ProcessBuilder> config;
 
         private Process watchedProcess;
 
-        public MvnMonitor(ProcessBuilder config) {
+        public MvnMonitor(List<ProcessBuilder> config) {
             this.config = config;
         }
 
@@ -99,24 +116,51 @@ public class MvnRunner {
                 try {
                     dirty = false;
 
+                    for (int i = 0; i < config.size() - 1; i++) {
+
+                        ProcessBuilder pb = config.get(i);
+
+                        System.out.print("Starting " + pb.command().get(0) + "...");
+                        Process p = pb.start();
+                        System.out.println("done. ");
+                        try {
+                            p.waitFor(10, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
+                            lastNotifiedException = e;
+                            e.printStackTrace();
+                        } finally {
+                            if (p.isAlive()) {
+                                System.out.println("Destroy Forcibly " + pb.command().get(0));
+                                p.destroyForcibly();
+                            }
+                        }
+                    }
+
+                    ProcessBuilder finalConfig = config.get((config.size() - 1));
+
                     if (watchedProcess == null) {
-                        watchedProcess = config.start();
-                        System.out.println("Started process (a) " + watchedProcess.toString());
+                        System.out.print("Starting process (a) " + finalConfig.command().get(0) + "...");
+                        watchedProcess = finalConfig.start();
+                        System.out.println("ready. " + watchedProcess.toString());
+
                     } else if (!watchedProcess.isAlive()) {
-                        watchedProcess = config.start();
-                        System.out.println("Started process (b) " + watchedProcess.toString());
+                        System.out.print("Starting process (b) " + finalConfig.command().get(0) + "...");
+                        watchedProcess = finalConfig.start();
+                        System.out.println("ready. " + watchedProcess.toString());
                     }
 
                 } catch (IOException e) {
                     lastError = e;
+                    e.printStackTrace();
                 }
 
                 while (dirty == false && watchedProcess.isAlive()) {
                     try {
                         if (watchedProcess.isAlive())
-                            watchedProcess.waitFor(1, TimeUnit.SECONDS);
+                            watchedProcess.waitFor(500, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         lastError = e;
+                        e.printStackTrace();
                     }
                 }
 
@@ -132,6 +176,7 @@ public class MvnRunner {
         }
 
         private void kill() {
+
             if (watchedProcess != null)
                 if (watchedProcess.isAlive()) {
                     watchedProcess.destroyForcibly();
@@ -141,36 +186,5 @@ public class MvnRunner {
         }
 
     }
-
-
-//    public void startBuildWithInvoker() {
-//
-//        InvocationRequest request = new DefaultInvocationRequest();
-//
-//        request.setBaseDirectory(projectPath.toFile());
-//        request.setPomFile(new File(projectPath.toFile(), "pom.xml"));
-//        request.setGoals(Collections.singletonList("spring-boot:run"));
-//        request.setErrorHandler(new RunnerErrorHandler());
-//        request.setInteractive(false);
-//        //request.setOffline(true);
-//        request.setOutputHandler(new RunnerOutputHandler());
-//        request.setRecursive(false);
-//        request.setUpdateSnapshots(false);
-//
-//        Invoker invoker = new DefaultInvoker();
-//
-//        InvocationResult result = null;
-//        try {
-//            invoker.execute(request);
-//        } catch (MavenInvocationException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (result != null)
-//            if (result.getExitCode() != 0) {
-//                throw new IllegalStateException("Build failed.");
-//            }
-//
-//    }
 
 }
