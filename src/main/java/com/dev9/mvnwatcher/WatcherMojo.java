@@ -72,7 +72,6 @@ public class WatcherMojo
         try {
             runner = new MvnWatcher(sourceDirectory.toPath(), basedir.toPath());
             runner.startUpWatcher();
-            log.info("Starting watcher...");
             runner.terminate = terminate;
         } catch (IOException e) {
             e.printStackTrace();
