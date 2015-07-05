@@ -8,10 +8,42 @@ Maven Plugin for watching and restarting a build based on monitoring a file dire
 When used with a microservice project, gives you something that feels like a dynamic reload capability, 
 especially if running on a fast machine.  
 
-Usage
-=====
 
-Well, as of this writing it's a not-quite-working-yet PoC.  Eventually, you'll just add this to the pom.xml...
+Current Working State
+=====================
+
+Ok, so this is a work in progress, but the concept basically works.  To try it out, do the following:
+
+Check out and install the project.  You'll want to do this:
+
+   mvn clean install
+   
+...to install the plugin.  Then, once you have build the project, cd into the sample project like this:
+
+   cd target/test-classes/sample-project
+
+...and start the watcher:
+
+   mvn watcher:watch
+   
+You should see the watcher start watching the demo project immediately.  You can open your browser to:
+
+http://localhost:8080
+
+...and you should see Cool World and the date.
+
+Now, open up this file in your favorite IDE:
+
+   /mvnwatcher/target/test-classes/sample-project/src/main/java/demo/Example.java
+   
+...and play around with the output of the file.  For example, instead of Cool World change the text to Hello World.
+Save the file, and watch the output of the watcher terminal.  After a second or two, you should see the watcher notice
+the changes, shut down, rebuild, and relaunch your project!
+
+(Eventual) Usage
+================
+
+Well, as of this writing it's a working PoC, but it's filled with hard-coded values.  Eventually, you'll just add this to the pom.xml...
 
     <build>
         <plugins>
@@ -43,8 +75,6 @@ To Do
 =====
 
 * Add newly added directories to watch
-* Start goal when first launched
-* Shut down & restart goal when change detected
 * Add System tray UI notifications
 * Add pom.xml configuration options
 * Ignore file changes that start with a .
