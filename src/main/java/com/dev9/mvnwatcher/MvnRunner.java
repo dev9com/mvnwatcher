@@ -1,10 +1,12 @@
 package com.dev9.mvnwatcher;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,18 +20,22 @@ public class MvnRunner {
 
     Path projectPath;
 
-    public MvnRunner(Path projectPath) {
-        this.projectPath = projectPath;
+    public MvnRunner(Path projectPath, List<Task> tasks) {
+
+        this.projectPath = Objects.requireNonNull(projectPath);
+        this.tasks = Objects.requireNonNull(tasks);
     }
 
     private MvnMonitor monitor;
 
+    private List<Task> tasks;
 
-    private ProcessBuilder getPB(List<String> params, Path directory, String logFile) {
+
+    private ProcessBuilder getPB(List<String> params, Path directory, File logFile) {
         ProcessBuilder b = new ProcessBuilder(params);
         b.directory(directory.toFile());
 
-        Path log = Paths.get(projectPath.toAbsolutePath().toString(), "target", logFile);
+        Path log = Paths.get(projectPath.toAbsolutePath().toString(), "target", logFile.getAbsolutePath());
 
         b.redirectErrorStream(true);
         b.redirectOutput(ProcessBuilder.Redirect.appendTo(log.toFile()));
@@ -41,15 +47,11 @@ public class MvnRunner {
 
         List<ProcessBuilder> configs = new ArrayList<>();
 
-        ProcessBuilder pb1 = getPB(java.util.Arrays.asList(
-                "mvn", "resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"), projectPath, "mvnrunner.log");
-
-        Path targetDir = Paths.get(projectPath.toAbsolutePath().toString(), "target");
-
-        ProcessBuilder pb2 = getPB(java.util.Arrays.asList("java", "-jar", "demo-0.0.1-SNAPSHOT.jar"), targetDir, "app.log");
-
-        configs.add(pb1);
-        configs.add(pb2);
+        for(Task task: tasks)
+        {
+            ProcessBuilder pb = getPB(task.toArgList(), projectPath, task.getOutputFile());
+            configs.add(pb);
+        }
 
         monitor = new MvnMonitor(configs);
 

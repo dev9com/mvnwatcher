@@ -6,6 +6,7 @@ import com.google.common.eventbus.EventBus;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
@@ -16,12 +17,14 @@ public class MvnWatcher {
 
     private final Path sourcePath;
     private final Path projectPath;
+    private final List<Task> tasks;
 
     private MvnRunner runner;
 
-    public MvnWatcher(Path sourcePath, Path projectPath) {
+    public MvnWatcher(Path sourcePath, Path projectPath, List<Task> tasks) {
         this.sourcePath = Objects.requireNonNull(sourcePath);
         this.projectPath = Objects.requireNonNull(projectPath);
+        this.tasks = Objects.requireNonNull(tasks);
     }
 
     /**
@@ -36,7 +39,7 @@ public class MvnWatcher {
         eventBus = new EventBus();
         dirWatcher = new DirectoryEventWatcherImpl(eventBus, sourcePath);
         dirWatcher.start();
-        runner = new MvnRunner(projectPath);
+        runner = new MvnRunner(projectPath, tasks);
         subscriber = new FileChangeSubscriber(dirWatcher, runner);
         eventBus.register(subscriber);
         runner.start();

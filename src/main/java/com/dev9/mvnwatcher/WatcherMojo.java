@@ -24,9 +24,16 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Goal which watches the default sourceDirectory
+ * <p/>
+ * //            ProcessBuilder pb1 = getPB(java.util.Arrays.asList(
+ * //                    "mvn", "resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"), projectPath, "mvnrunner.log");
+ * //            ProcessBuilder pb2 = getPB(java.util.Arrays.asList("java", "-jar", "demo-0.0.1-SNAPSHOT.jar"), targetDir, "app.log");
  *
  * @goal watch
  */
@@ -39,22 +46,50 @@ public class WatcherMojo
      * @parameter property="project.build.sourceDirectory" default-value="${project.build.sourceDirectory}"
      * @required
      */
-    @VisibleForTesting
     public File sourceDirectory;
 
     /**
      * @parameter default-value="${project.basedir}"
      * @readonly
      */
-    @VisibleForTesting
     public File basedir;
-
 
     /**
      * Defaults to false.  Set to true for WatcherMojo to self-terminate (useful for testing and...?)
      */
     @VisibleForTesting
     public boolean terminate = false;
+
+    /**
+     * @parameter
+     */
+    public List<Task> tasks;
+
+    public List<Task> getDefaultTasks()
+    {
+        if(basedir == null)
+            basedir = Paths.get("").toFile();
+
+        if(sourceDirectory == null)
+            sourceDirectory = Paths.get("", "src", "main", "java").toFile();
+
+        List<Task> result = new ArrayList<>();
+
+        Task mvnBuild = new Task();
+        mvnBuild.setExecutable("mvn");
+        mvnBuild.setArguments(java.util.Arrays.asList("resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"));
+        mvnBuild.setOutputFile(Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner.log").toFile());;
+
+        Task javaBuild = new Task();
+        javaBuild.setExecutable("java");
+        javaBuild.setArguments(java.util.Arrays.asList("-jar", "demo-0.0.1-SNAPSHOT.jar"));
+        javaBuild.setOutputFile(Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner-app.log").toFile());;
+
+        result.add(mvnBuild);
+        result.add(javaBuild);
+
+        return result;
+    }
 
     public void execute()
             throws MojoExecutionException {
@@ -70,7 +105,11 @@ public class WatcherMojo
         MvnWatcher runner = null;
 
         try {
-            runner = new MvnWatcher(sourceDirectory.toPath(), basedir.toPath());
+
+            if(tasks == null)
+                tasks = getDefaultTasks();
+
+            runner = new MvnWatcher(sourceDirectory.toPath(), basedir.toPath(), tasks);
             runner.startUpWatcher();
             runner.terminate = terminate;
         } catch (IOException e) {

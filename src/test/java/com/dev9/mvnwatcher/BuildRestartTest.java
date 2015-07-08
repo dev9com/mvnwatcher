@@ -1,5 +1,6 @@
 package com.dev9.mvnwatcher;
 
+import com.dev9.mvnwatcher.WatcherMojo;
 import org.junit.After;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class BuildRestartTest {
         Path projectPath = Paths.get(cwd, "target/test-classes/sample-project/");
         Path sourcePath = Paths.get(cwd, "target/test-classes/sample-project/src/main/java");
 
-        MvnRunner runner = new MvnRunner(projectPath);
+        MvnRunner runner = new MvnRunner(projectPath, new WatcherMojo().getDefaultTasks());
 
         runner.start();
 

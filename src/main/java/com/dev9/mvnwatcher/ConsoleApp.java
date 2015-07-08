@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@Deprecated
 public class ConsoleApp {
 
     public static void main(String[] args) {
@@ -16,7 +17,7 @@ public class ConsoleApp {
         MvnWatcher runner = null;
 
         try {
-            runner = new MvnWatcher(sourcePath, projectPath);
+            runner = new MvnWatcher(sourcePath, projectPath, new WatcherMojo().getDefaultTasks());
             runner.startUpWatcher();
         } catch (IOException e) {
             e.printStackTrace();

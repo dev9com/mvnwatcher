@@ -1,5 +1,6 @@
 package com.dev9.mvnwatcher;
 
+import com.dev9.mvnwatcher.WatcherMojo;
 import org.junit.After;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class MvnwatcherTest {
         Path projectPath = Paths.get(cwd, "target/test-classes/sample-project/");
         Path sourcePath = Paths.get(cwd, "target/test-classes/sample-project/src/main/java");
 
-        runner = new MvnWatcher(sourcePath, projectPath);
+        runner = new MvnWatcher(sourcePath, projectPath, new WatcherMojo().getDefaultTasks());
 
         runner.startUpWatcher();
     }
