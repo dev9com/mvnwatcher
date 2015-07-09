@@ -31,16 +31,11 @@ import java.util.List;
 
 /**
  * Goal which watches the default sourceDirectory
- * <p/>
- * //            ProcessBuilder pb1 = getPB(java.util.Arrays.asList(
- * //                    "mvn", "resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"), projectPath, "mvnrunner.log");
- * //            ProcessBuilder pb2 = getPB(java.util.Arrays.asList("java", "-jar", "demo-0.0.1-SNAPSHOT.jar"), targetDir, "app.log");
  *
  * @goal watch
  */
-@Mojo(name = "Watcher")
-public class WatcherMojo
-        extends AbstractMojo {
+@Mojo(name = "watch")
+public class WatcherMojo extends AbstractMojo {
     /**
      * Location of the Java sources.
      *
@@ -57,7 +52,6 @@ public class WatcherMojo
      */
     public File basedir;
 
-
     /**
      * Typically, this is the target directory.
      *
@@ -67,7 +61,7 @@ public class WatcherMojo
     public File directory;
 
     /**
-     * Defaults to false.  Set to true for WatcherMojo to self-terminate (useful for testing and...?)
+     * Defaults to false.  Set to true for WatcherMojo to self-terminate (useful for testing)
      */
     @VisibleForTesting
     public boolean terminate = false;
@@ -79,7 +73,7 @@ public class WatcherMojo
 
     public void createTargetDirectoryIfNotExists() {
 
-        if(!basedir.exists())
+        if (!basedir.exists())
             throw new IllegalArgumentException("Can't create target directory, no basedir defined.");
 
         if (directory == null) {
@@ -102,7 +96,7 @@ public class WatcherMojo
 
         createTargetDirectoryIfNotExists();
 
-        System.out.println("Using default configuration.");
+        System.out.println("Using default spring-boot configuration.");
 
         List<Task> result = new ArrayList<>();
 
@@ -125,8 +119,7 @@ public class WatcherMojo
         return result;
     }
 
-    public void execute()
-            throws MojoExecutionException {
+    public void execute() throws MojoExecutionException {
 
         Log log = getLog();
 

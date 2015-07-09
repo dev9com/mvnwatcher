@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Responsible for managing the lifecycle of the mvn execution.
- * <p/>
- * Monitor started = set dirty flag
- * Directory changed = set dirty flag
- * If dirty flag set, wait 1 second, then stop build if running, and then start build.
+ * Responsible for managing the lifecycle of the MvnMonitor.
+ *
+ * @see MvnMonitor
  */
 public class MvnRunner {
 

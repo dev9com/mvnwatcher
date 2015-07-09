@@ -1,22 +1,19 @@
 package com.dev9.mvnwatcher;
 
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.URL;
 
 public class MvnSystemNotifications {
 
     private boolean gui;
 
-    SystemTray tray;
+    MvnMonitor monitor;
 
+    SystemTray tray;
     private TrayIcon trayIcon;
 
     PopupMenu popup = new PopupMenu();
-
     MenuItem messageMenu = new MenuItem("Starting...");
     MenuItem exceptionMenu = new MenuItem("Last Exception");
 
@@ -29,8 +26,6 @@ public class MvnSystemNotifications {
     public String status() {
         return lastUpdate;
     }
-
-    MvnMonitor monitor;
 
     public MvnSystemNotifications(MvnMonitor monitor) {
         this.monitor = monitor;
@@ -52,7 +47,7 @@ public class MvnSystemNotifications {
         return IMAGE_FAIL;
     }
 
-    public void setupImages() {
+    private void setupImages() {
         IMAGE_OK = createImage("/images/OK.png", "Running Normally");
         IMAGE_FAIL = createImage("/images/FAIL.png", "Build Failing");
         IMAGE_WORKING = createImage("/images/WORKING.png", "Building...");
@@ -94,11 +89,9 @@ public class MvnSystemNotifications {
         }
     }
 
-
     public void update(String message, Status status) {
         update(message, status, null);
     }
-
 
     public void update(String message, Status status, Exception e) {
 

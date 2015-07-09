@@ -22,6 +22,11 @@ public class MvnWatcher {
 
     private MvnRunner runner;
 
+    /**
+     * Set to false to terminate
+     */
+    public boolean terminate = false;
+
     public MvnWatcher(Path sourcePath, Path projectPath, Path targetPath, List<Task> tasks) {
         this.sourcePath = Objects.requireNonNull(sourcePath);
         this.projectPath = Objects.requireNonNull(projectPath);
@@ -45,11 +50,6 @@ public class MvnWatcher {
         eventBus.register(subscriber);
         runner.start();
     }
-
-    /**
-     * Set to false to terminate
-     */
-    public boolean terminate = false;
 
     /**
      * Start a sleeping loop waiting for a cancel.

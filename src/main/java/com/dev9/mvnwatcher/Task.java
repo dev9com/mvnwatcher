@@ -19,8 +19,6 @@ public class Task {
         this.outputFile = outputFile;
         this.executableDirectory = executableDirectory;
 
-
-
         if (!Files.exists(Paths.get(outputFile.getParent())))
             throw new IllegalArgumentException("Can't find " + outputFile.getParent());
 
@@ -30,16 +28,6 @@ public class Task {
 
     public File getOutputFile() {
         return outputFile;
-    }
-
-
-    public String getExecutable() {
-        return executable;
-    }
-
-
-    public List<String> getArguments() {
-        return arguments;
     }
 
     public List<String> toArgList() {

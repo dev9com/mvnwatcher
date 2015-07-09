@@ -7,7 +7,6 @@ package com.dev9.mvnwatcher.event;
  * Time: 12:44 PM
  */
 
-
 public interface PathEventSubscriber {
 
     void handlePathEvents(PathEventContext pathEventContext);

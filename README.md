@@ -40,10 +40,13 @@ Now, open up this file in your favorite IDE:
 Save the file, and watch the output of the watcher terminal.  After a second or two, you should see the watcher notice
 the changes, shut down, rebuild, and relaunch your project!
 
+You'll also see an icon in your system tray showing the status of the build.  Select Quit from the system tray menu
+to exit the watcher.
+
 (Eventual) Usage
 ================
 
-Well, as of this writing it's a working PoC, but it's filled with hard-coded values.  Eventually, you'll just add this to the pom.xml...
+Once the plugin is installed, you can run it from your build by adding the following to your project pom.xml...
 
     <build>
         <plugins>
@@ -55,14 +58,46 @@ Well, as of this writing it's a working PoC, but it's filled with hard-coded val
         </plugins>
     </build>
 
-...and then type this at the console window...
+...and then run the plugin, either from inside your IDE or a terminal...
 
     mvn watcher:watch
     
-...and the plugin will launch, and start monitoring your project.  Changes to files or directories inside the sources
+The plugin should launch and start monitoring your project.  Changes to files or directories inside the sources
 folder will cause the plugin to stop and then restart the build.
 
-Eventually, there will be more configuration options, etc.
+Configuration
+=============
+
+The configuration options include:
+
+    sourceDirectory - default-value="${project.build.sourceDirectory}"
+
+    basedir - default-value="${project.basedir}"
+
+    directory - default-value="${project.build.directory}"
+
+    terminate - defaults to false, set this to true for the plugin to self-terminate (useful for testing)
+
+    tasks
+            executable
+            arguments
+            outputFile
+            executableDirectory
+    
+The defaults for tasks are:
+
+    Task mvnBuild = new Task(
+                "mvn",
+                java.util.Arrays.asList("resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"),
+                Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner.log").toFile(),
+                basedir.toPath());
+
+        Task javaBuild = new Task(
+                "java",
+                java.util.Arrays.asList("-jar", "demo-0.0.1-SNAPSHOT.jar"),
+                Paths.get(directory.getAbsolutePath(), "mvnrunner-app.log").toFile(),
+                directory.toPath()
+        );
 
 Thanks!
 =======
@@ -75,6 +110,5 @@ To Do
 =====
 
 * Add newly added directories to watch
-* Add System tray UI notifications
-* Add pom.xml configuration options
-* Ignore file changes that start with a .
+
+Right now, directories added after the watcher is launched are not monitored.
