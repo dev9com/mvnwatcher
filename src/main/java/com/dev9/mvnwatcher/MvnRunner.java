@@ -30,6 +30,8 @@ public class MvnRunner {
 
     private List<Task> tasks;
 
+    private MvnSystemNotifications notifier;
+
 
     private ProcessBuilder getPB(List<String> params, File logFile) {
         ProcessBuilder b = new ProcessBuilder(params);
@@ -44,6 +46,9 @@ public class MvnRunner {
     public void start() {
 
         List<ProcessBuilder> configs = new ArrayList<>();
+
+        notifier = new MvnSystemNotifications();
+        notifier.init(true);
 
         for (Task task : tasks) {
             ProcessBuilder pb = getPB(task.toArgList(), task.getOutputFile());
@@ -111,7 +116,7 @@ public class MvnRunner {
                         System.err.println(lastError.getMessage());
                 }
 
-                if(dirty == true) {
+                if (dirty == true) {
                     try {
                         dirty = false;
 
@@ -119,11 +124,11 @@ public class MvnRunner {
 
                             ProcessBuilder pb = config.get(i);
 
-                            System.out.print("Starting " + pb.command().get(0) + "...");
+                            notifier.update("Starting " + pb.command().get(0) + "...",
+                                    MvnSystemNotifications.Status.WORKING);
 
                             Process p = pb.start();
 
-                            System.out.println("done. ");
                             try {
                                 p.waitFor(10, TimeUnit.SECONDS);
                             } catch (InterruptedException e) {
@@ -140,17 +145,23 @@ public class MvnRunner {
                         ProcessBuilder finalConfig = config.get((config.size() - 1));
 
                         if (watchedProcess == null) {
-                            System.out.print("Starting process (a) " + finalConfig.command().get(0) + "...");
+                            notifier.update("Starting process (a) " + finalConfig.command().get(0) + "...",
+                                    MvnSystemNotifications.Status.WORKING);
                             watchedProcess = finalConfig.start();
-                            System.out.println("ready. " + watchedProcess.toString());
+                            notifier.update("Ready",
+                                    MvnSystemNotifications.Status.OK);
 
                         } else if (!watchedProcess.isAlive()) {
-                            System.out.print("Starting process (b) " + finalConfig.command().get(0) + "...");
+                            notifier.update("Starting process (b) " + finalConfig.command().get(0) + "...",
+                                    MvnSystemNotifications.Status.WORKING);
                             watchedProcess = finalConfig.start();
-                            System.out.println("ready. " + watchedProcess.toString());
+                            notifier.update("Ready",
+                                    MvnSystemNotifications.Status.OK);
                         }
 
                     } catch (IOException e) {
+                        notifier.update(e.getLocalizedMessage(),
+                                MvnSystemNotifications.Status.FAIL);
                         lastError = e;
                         e.printStackTrace();
                     }
