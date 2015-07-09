@@ -23,7 +23,7 @@ public class BuildRestartTest {
 
         runner.start();
 
-        Thread.sleep(10000);
+        Thread.sleep(5000);
     }
 
     @After
