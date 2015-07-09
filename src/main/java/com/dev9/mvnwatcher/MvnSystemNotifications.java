@@ -16,10 +16,17 @@ public class MvnSystemNotifications {
     PopupMenu popup = new PopupMenu();
 
     MenuItem messageMenu = new MenuItem("Starting...");
+    MenuItem exceptionMenu = new MenuItem("Last Exception");
 
     private Image IMAGE_OK;
     private Image IMAGE_FAIL;
     private Image IMAGE_WORKING;
+
+    private String lastUpdate = "-";
+
+    public String status() {
+        return lastUpdate;
+    }
 
     public enum Status {
         OK, FAIL, WORKING
@@ -71,19 +78,55 @@ public class MvnSystemNotifications {
         }
     }
 
+
     public void update(String message, Status status) {
+        update(message, status, null);
+    }
+
+
+    public void update(String message, Status status, Exception e) {
+
+        if (message == null)
+            return;
+        if (status == null)
+            return;
+
+        String newMessage;
+
+        if (e == null)
+            newMessage = message + ":" + status.toString();
+        else
+            newMessage = message + ":" + status.toString() + ":" + e.getMessage();
+
+        if (lastUpdate.compareTo(newMessage) == 0) {
+            return;
+        }
+
+        lastUpdate = newMessage;
+
         if (gui) {
             trayIcon.setImage(statusToImage(status));
             trayIcon.setToolTip(message);
             messageMenu.setLabel(message);
 
-        } else {
-            System.out.println(message);
+            if (e == null) {
+                if (exceptionMenu.getParent() != null)
+                    popup.remove(exceptionMenu);
+            } else {
+                if (exceptionMenu.getParent() == null)
+                    popup.add(exceptionMenu);
+                exceptionMenu.setLabel(e.getLocalizedMessage());
+            }
         }
+
+        System.out.println(message);
+        if (e != null)
+            e.printStackTrace();
     }
 
 
     //Obtain the image URL
+
     protected Image createImage(String path, String description) {
         URL imageURL = MvnSystemNotifications.class.getResource(path);
 

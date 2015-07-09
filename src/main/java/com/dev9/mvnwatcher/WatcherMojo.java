@@ -24,6 +24,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,8 +78,12 @@ public class WatcherMojo
     public List<Task> tasks;
 
     public void createTargetDirectoryIfNotExists() {
+
+        if(!basedir.exists())
+            throw new IllegalArgumentException("Can't create target directory, no basedir defined.");
+
         if (directory == null) {
-            directory = Paths.get("", "target").toFile();
+            directory = Paths.get(basedir.getAbsolutePath(), "target").toFile();
         }
 
         if (!directory.exists()) {
@@ -87,26 +92,32 @@ public class WatcherMojo
 
     }
 
-    public List<Task> getDefaultTasks() {
+    public List<Task> getDefaultTasks(Path base) {
         if (basedir == null)
-            basedir = Paths.get("").toFile();
+            basedir = base.toFile();
 
-        if (sourceDirectory == null)
-            sourceDirectory = Paths.get("", "src", "main", "java").toFile();
+        if (sourceDirectory == null) {
+            sourceDirectory = Paths.get(base.toFile().getAbsolutePath(), "src", "main", "java").toFile();
+        }
+
+        createTargetDirectoryIfNotExists();
+
+        System.out.println("Using default configuration.");
 
         List<Task> result = new ArrayList<>();
 
-        Task mvnBuild = new Task();
-        mvnBuild.setExecutable("mvn");
-        mvnBuild.setArguments(java.util.Arrays.asList("resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"));
-        mvnBuild.setOutputFile(Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner.log").toFile());
-        ;
+        Task mvnBuild = new Task(
+                "mvn",
+                java.util.Arrays.asList("resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"),
+                Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner.log").toFile(),
+                basedir.toPath());
 
-        Task javaBuild = new Task();
-        javaBuild.setExecutable("java");
-        javaBuild.setArguments(java.util.Arrays.asList("-jar", "demo-0.0.1-SNAPSHOT.jar"));
-        javaBuild.setOutputFile(Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner-app.log").toFile());
-        ;
+        Task javaBuild = new Task(
+                "java",
+                java.util.Arrays.asList("-jar", "demo-0.0.1-SNAPSHOT.jar"),
+                Paths.get(directory.getAbsolutePath(), "mvnrunner-app.log").toFile(),
+                directory.toPath()
+        );
 
         result.add(mvnBuild);
         result.add(javaBuild);
@@ -136,7 +147,7 @@ public class WatcherMojo
         try {
 
             if (tasks == null)
-                tasks = getDefaultTasks();
+                tasks = getDefaultTasks(basedir.toPath());
 
             runner = new MvnWatcher(sourceDirectory.toPath(), basedir.toPath(), directory.toPath(), tasks);
             runner.startUpWatcher();

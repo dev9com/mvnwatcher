@@ -20,7 +20,7 @@ public class MvnwatcherTest {
         Path targetPath = Paths.get(cwd, "target", "test-classes", "sample-project", "target");
         Path sourcePath = Paths.get(cwd, "target", "test-classes", "sample-project", "src", "main", "java");
 
-        runner = new MvnWatcher(sourcePath, projectPath, targetPath, new WatcherMojo().getDefaultTasks());
+        runner = new MvnWatcher(sourcePath, projectPath, targetPath, new WatcherMojo().getDefaultTasks(projectPath));
 
         runner.startUpWatcher();
     }
