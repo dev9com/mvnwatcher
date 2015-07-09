@@ -16,10 +16,11 @@ public class MvnwatcherTest {
     public void simpleBootTest() throws IOException {
         String cwd = Paths.get("").toAbsolutePath().toString();
 
-        Path projectPath = Paths.get(cwd, "target/test-classes/sample-project/");
-        Path sourcePath = Paths.get(cwd, "target/test-classes/sample-project/src/main/java");
+        Path projectPath = Paths.get(cwd, "target", "test-classes", "sample-project");
+        Path targetPath = Paths.get(cwd, "target", "test-classes", "sample-project", "target");
+        Path sourcePath = Paths.get(cwd, "target", "test-classes", "sample-project", "src", "main", "java");
 
-        runner = new MvnWatcher(sourcePath, projectPath, new WatcherMojo().getDefaultTasks());
+        runner = new MvnWatcher(sourcePath, projectPath, targetPath, new WatcherMojo().getDefaultTasks());
 
         runner.startUpWatcher();
     }

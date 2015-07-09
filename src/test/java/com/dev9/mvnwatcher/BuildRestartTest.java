@@ -16,15 +16,14 @@ public class BuildRestartTest {
     public void simpleBootTest() throws IOException, InterruptedException {
         String cwd = Paths.get("").toAbsolutePath().toString();
 
-        Path projectPath = Paths.get(cwd, "target/test-classes/sample-project/");
-        Path sourcePath = Paths.get(cwd, "target/test-classes/sample-project/src/main/java");
+        Path projectPath = Paths.get(cwd, "target", "test-classes", "sample-project");
+        Path targetPath = Paths.get(cwd, "target", "test-classes", "sample-project", "target");
 
-        MvnRunner runner = new MvnRunner(projectPath, new WatcherMojo().getDefaultTasks());
+        MvnRunner runner = new MvnRunner(projectPath, targetPath, new WatcherMojo().getDefaultTasks());
 
         runner.start();
 
         Thread.sleep(10000);
-
     }
 
     @After

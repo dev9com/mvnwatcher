@@ -41,7 +41,7 @@ import java.util.List;
 public class WatcherMojo
         extends AbstractMojo {
     /**
-     * Location of the file.
+     * Location of the Java sources.
      *
      * @parameter property="project.build.sourceDirectory" default-value="${project.build.sourceDirectory}"
      * @required
@@ -49,10 +49,21 @@ public class WatcherMojo
     public File sourceDirectory;
 
     /**
+     * This is typically the root folder for the project, holding the pom.xml file.
+     *
      * @parameter default-value="${project.basedir}"
      * @readonly
      */
     public File basedir;
+
+
+    /**
+     * Typically, this is the target directory.
+     *
+     * @parameter default-value="${project.build.directory}"
+     * @readonly
+     */
+    public File directory;
 
     /**
      * Defaults to false.  Set to true for WatcherMojo to self-terminate (useful for testing and...?)
@@ -65,12 +76,22 @@ public class WatcherMojo
      */
     public List<Task> tasks;
 
-    public List<Task> getDefaultTasks()
-    {
-        if(basedir == null)
+    public void createTargetDirectoryIfNotExists() {
+        if (directory == null) {
+            directory = Paths.get("", "target").toFile();
+        }
+
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+    }
+
+    public List<Task> getDefaultTasks() {
+        if (basedir == null)
             basedir = Paths.get("").toFile();
 
-        if(sourceDirectory == null)
+        if (sourceDirectory == null)
             sourceDirectory = Paths.get("", "src", "main", "java").toFile();
 
         List<Task> result = new ArrayList<>();
@@ -78,12 +99,14 @@ public class WatcherMojo
         Task mvnBuild = new Task();
         mvnBuild.setExecutable("mvn");
         mvnBuild.setArguments(java.util.Arrays.asList("resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"));
-        mvnBuild.setOutputFile(Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner.log").toFile());;
+        mvnBuild.setOutputFile(Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner.log").toFile());
+        ;
 
         Task javaBuild = new Task();
         javaBuild.setExecutable("java");
         javaBuild.setArguments(java.util.Arrays.asList("-jar", "demo-0.0.1-SNAPSHOT.jar"));
-        javaBuild.setOutputFile(Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner-app.log").toFile());;
+        javaBuild.setOutputFile(Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner-app.log").toFile());
+        ;
 
         result.add(mvnBuild);
         result.add(javaBuild);
@@ -96,20 +119,26 @@ public class WatcherMojo
 
         Log log = getLog();
 
+        if (!basedir.exists()) {
+            throw new MojoExecutionException("Can't find project directory " + basedir);
+        }
+
         if (!sourceDirectory.exists()) {
-            throw new MojoExecutionException("Can't find directory " + sourceDirectory);
+            throw new MojoExecutionException("Can't find source directory " + sourceDirectory);
         } else {
             log.info("Found: " + sourceDirectory.getAbsolutePath());
         }
+
+        createTargetDirectoryIfNotExists();
 
         MvnWatcher runner = null;
 
         try {
 
-            if(tasks == null)
+            if (tasks == null)
                 tasks = getDefaultTasks();
 
-            runner = new MvnWatcher(sourceDirectory.toPath(), basedir.toPath(), tasks);
+            runner = new MvnWatcher(sourceDirectory.toPath(), basedir.toPath(), directory.toPath(), tasks);
             runner.startUpWatcher();
             runner.terminate = terminate;
         } catch (IOException e) {

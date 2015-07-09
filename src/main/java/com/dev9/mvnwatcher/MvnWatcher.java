@@ -17,13 +17,15 @@ public class MvnWatcher {
 
     private final Path sourcePath;
     private final Path projectPath;
+    private final Path targetPath;
     private final List<Task> tasks;
 
     private MvnRunner runner;
 
-    public MvnWatcher(Path sourcePath, Path projectPath, List<Task> tasks) {
+    public MvnWatcher(Path sourcePath, Path projectPath, Path targetPath, List<Task> tasks) {
         this.sourcePath = Objects.requireNonNull(sourcePath);
         this.projectPath = Objects.requireNonNull(projectPath);
+        this.targetPath = Objects.requireNonNull(targetPath);
         this.tasks = Objects.requireNonNull(tasks);
     }
 
@@ -39,7 +41,7 @@ public class MvnWatcher {
         eventBus = new EventBus();
         dirWatcher = new DirectoryEventWatcherImpl(eventBus, sourcePath);
         dirWatcher.start();
-        runner = new MvnRunner(projectPath, tasks);
+        runner = new MvnRunner(projectPath, targetPath, tasks);
         subscriber = new FileChangeSubscriber(dirWatcher, runner);
         eventBus.register(subscriber);
         runner.start();
