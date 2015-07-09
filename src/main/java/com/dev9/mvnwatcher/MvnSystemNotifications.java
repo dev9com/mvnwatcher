@@ -13,6 +13,10 @@ public class MvnSystemNotifications {
 
     private TrayIcon trayIcon;
 
+    PopupMenu popup = new PopupMenu();
+
+    MenuItem messageMenu = new MenuItem("Starting...");
+
     private Image IMAGE_OK;
     private Image IMAGE_FAIL;
     private Image IMAGE_WORKING;
@@ -55,6 +59,10 @@ public class MvnSystemNotifications {
 
             try {
                 tray.add(trayIcon);
+
+                popup.add(messageMenu);
+
+                trayIcon.setPopupMenu(popup);
             } catch (AWTException e) {
                 System.err.println("Unable to start system tray integration.");
                 e.printStackTrace();
@@ -67,6 +75,8 @@ public class MvnSystemNotifications {
         if (gui) {
             trayIcon.setImage(statusToImage(status));
             trayIcon.setToolTip(message);
+            messageMenu.setLabel(message);
+
         } else {
             System.out.println(message);
         }
