@@ -30,7 +30,7 @@ public class Task {
         return outputFile;
     }
 
-    public List<String> toArgList() {
+    private List<String> toArgList() {
         List<String> result = new ArrayList<>();
 
         result.add(executable);

@@ -36,7 +36,7 @@ class MvnMonitor implements Runnable {
             notifier.update("Starting " + pb.command().get(0) + "...",
                     MvnSystemNotifications.Status.WORKING);
 
-            Process p = null;
+            Process p;
             try {
                 p = pb.start();
             } catch (IOException e1) {
@@ -94,12 +94,6 @@ class MvnMonitor implements Runnable {
             notifier.update(e1.getLocalizedMessage(),
                     MvnSystemNotifications.Status.FAIL, e1);
         }
-
-        if(watchedProcess.isAlive())
-        {
-
-        }
-
     }
 
     @Override
@@ -110,7 +104,7 @@ class MvnMonitor implements Runnable {
 
         while (!shutdown) {
 
-            if (dirty == true) {
+            if (dirty) {
                 dirty = false;
 
                 kill();

@@ -100,11 +100,10 @@ public class DirectoryEventWatcherImpl implements DirectoryEventWatcher {
         Files.walkFileTree(startPath, new WatchServiceRegisteringVisitor());
     }
 
-    private WatchService initWatchService() throws IOException {
+    private void initWatchService() throws IOException {
         if (watchService == null) {
             watchService = FileSystems.getDefault().newWatchService();
         }
-        return watchService;
     }
 
     public void addPath(Path path) throws IOException {

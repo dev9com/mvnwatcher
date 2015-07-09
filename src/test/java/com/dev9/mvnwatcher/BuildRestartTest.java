@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BuildRestartTest {
 
-    MvnRunner runner;
+    private MvnRunner runner;
 
     @Test
     public void simpleBootTest() throws IOException, InterruptedException {

@@ -56,10 +56,10 @@ public class MvnSystemNotifications {
     public void init(boolean useGui) {
         gui = java.awt.SystemTray.isSupported();
 
-        if (useGui == false && gui == true)
+        if (!useGui && gui)
             gui = false;
 
-        if (gui == true) {
+        if (gui) {
 
             tray = SystemTray.getSystemTray();
 

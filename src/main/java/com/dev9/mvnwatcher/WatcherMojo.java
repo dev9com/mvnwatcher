@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @goal watch
  */
-@Mojo(name = "watch")
+@Mojo(name = "Watcher")
 public class WatcherMojo extends AbstractMojo {
     /**
      * Location of the Java sources.
