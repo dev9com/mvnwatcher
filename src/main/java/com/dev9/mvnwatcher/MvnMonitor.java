@@ -105,7 +105,7 @@ class MvnMonitor implements Runnable {
     @Override
     public void run() {
 
-        notifier = new MvnSystemNotifications();
+        notifier = new MvnSystemNotifications(this);
         notifier.init(true);
 
         while (!shutdown) {

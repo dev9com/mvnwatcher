@@ -35,7 +35,6 @@ public class MvnWatcher {
     public void startUpWatcher() throws IOException {
         EventBus eventBus;
         DirectoryEventWatcherImpl dirWatcher;
-        CountDownLatch doneSignal;
         FileChangeSubscriber subscriber;
 
         eventBus = new EventBus();
@@ -60,12 +59,14 @@ public class MvnWatcher {
         while (!terminate) {
             try {
                 Thread.sleep(1000);
+
+                if (!runner.running())
+                    terminate = true;
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-        runner.stop();
     }
 
 }

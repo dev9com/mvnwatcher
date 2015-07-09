@@ -3,6 +3,8 @@ package com.dev9.mvnwatcher;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
 
 public class MvnSystemNotifications {
@@ -26,6 +28,12 @@ public class MvnSystemNotifications {
 
     public String status() {
         return lastUpdate;
+    }
+
+    MvnMonitor monitor;
+
+    public MvnSystemNotifications(MvnMonitor monitor) {
+        this.monitor = monitor;
     }
 
     public enum Status {
@@ -67,7 +75,15 @@ public class MvnSystemNotifications {
             try {
                 tray.add(trayIcon);
 
+                messageMenu.setEnabled(false);
+
                 popup.add(messageMenu);
+
+                MenuItem quitMenu = new MenuItem();
+                quitMenu.setLabel("Quit");
+                quitMenu.addActionListener(e -> monitor.shutdown = true);
+
+                popup.add(quitMenu);
 
                 trayIcon.setPopupMenu(popup);
             } catch (AWTException e) {
@@ -126,8 +142,7 @@ public class MvnSystemNotifications {
 
 
     //Obtain the image URL
-
-    protected Image createImage(String path, String description) {
+    private Image createImage(String path, String description) {
         URL imageURL = MvnSystemNotifications.class.getResource(path);
 
         if (imageURL == null) {
