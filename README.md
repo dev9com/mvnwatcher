@@ -1,7 +1,7 @@
 # mvnwatcher
 
-Persistent Maven Build Watcher
-==============================
+Maven Plugin Build Watcher
+==========================
 
 Maven Plugin for watching and restarting a build based on monitoring a file directory.  
 
