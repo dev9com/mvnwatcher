@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Goal which watches the default sourceDirectory
+ * Only goal: watch a directory for changes.
  *
  * @goal watch
  */
