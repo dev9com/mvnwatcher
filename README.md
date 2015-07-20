@@ -16,25 +16,25 @@ Ok, so this is a work in progress, but the concept basically works.  To try it o
 
 Check out and install the project.  You'll want to do this:
 
-   mvn clean install
+    mvn clean install
    
 ...to install the plugin.  Then, once you have build the project, cd into the sample project like this:
 
-   cd target/test-classes/sample-project
+    cd target/test-classes/sample-project
 
 ...and start the watcher:
 
-   mvn watcher:watch
+    mvn watcher:watch
    
 You should see the watcher start watching the demo project immediately.  You can open your browser to:
 
-http://localhost:8080
+    http://localhost:8080
 
 ...and you should see Cool World and the date.
 
 Now, open up this file in your favorite IDE:
 
-   /mvnwatcher/target/test-classes/sample-project/src/main/java/demo/Example.java
+    /mvnwatcher/target/test-classes/sample-project/src/main/java/demo/Example.java
    
 ...and play around with the output of the file.  For example, instead of Cool World change the text to Hello World.
 Save the file, and watch the output of the watcher terminal.  After a second or two, you should see the watcher notice
@@ -70,22 +70,23 @@ Configuration
 
 The configuration options include:
 
-    sourceDirectory - default-value="${project.build.sourceDirectory}"
+*sourceDirectory* default-value="${project.build.sourceDirectory}"
 
-    basedir - default-value="${project.basedir}"
+*basedir* default-value="${project.basedir}"
 
-    directory - default-value="${project.build.directory}"
+*directory* default-value="${project.build.directory}"
 
-    terminate - defaults to false, set this to true for the plugin to self-terminate (useful for testing)
+*terminate* defaults to false, set this to true for the plugin to self-terminate (useful for testing)
 
-    tasks
-            executable
-            arguments
-            outputFile
-            executableDirectory
+* *tasks*
+  * executable
+  * arguments
+  * outputFile
+  * executableDirectory
     
 The defaults for tasks are:
 
+````java
     Task mvnBuild = new Task(
                 "mvn",
                 java.util.Arrays.asList("resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"),
@@ -98,6 +99,7 @@ The defaults for tasks are:
                 Paths.get(directory.getAbsolutePath(), "mvnrunner-app.log").toFile(),
                 directory.toPath()
         );
+````
 
 Thanks!
 =======
@@ -115,7 +117,7 @@ To Do
 Inspiration
 ===========
 
-Gradle: https://docs.gradle.org/current/release-notes#continuous-build
-Grunt: https://github.com/gruntjs/grunt-contrib-watch
-Gulp: https://www.npmjs.com/package/gulp-watch
-Play: https://www.playframework.com/
+[Gradle](https://docs.gradle.org/current/release-notes#continuous-build)
+[Grunt](https://github.com/gruntjs/grunt-contrib-watch)
+[Gulp](https://www.npmjs.com/package/gulp-watch)
+[Play](https://www.playframework.com/)
