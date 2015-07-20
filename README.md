@@ -41,7 +41,9 @@ your  [settings.xml](https://maven.apache.org/settings.html).
 ````    
     
 The plugin should launch and start monitoring your project.  Changes to files or directories inside the sources
-folder will cause the plugin to stop and then restart the build.
+folder will cause the plugin to stop and then restart the build.  You can easily see the status of the build from
+the system tray icon (green happy = ready, blue gear = restarting build, red exclaimation = build failing for some 
+reason).
 
 As described in Configuration, below, the default configuration assumes you are running a Spring Boot project.  If
 you are just trying this out for the first time, the easiest thing to do is go to the 
