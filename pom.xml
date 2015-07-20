@@ -4,10 +4,57 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>mvnwatcher</name>
+    <description>Maven Plugin to watch file system changes and automatically restart builds</description>
+    <url>https://github.com/dev9com/mvnwatcher</url>
+
     <groupId>com.dev9</groupId>
     <artifactId>watcher-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Will Iverson</name>
+            <email>will DOT iverson AT dev9 DOT com</email>
+            <organization>Dev9</organization>
+            <organizationUrl>http://www.dev9.com/</organizationUrl>
+            <timezone>America/Los_Angeles</timezone>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:dev9com/mvnwatcher.git</connection>
+        <developerConnection>scm:git:git@github.com:dev9com/mvnwatcher.git</developerConnection>
+        <url>git@github.com:dev9com/mvnwatcher.git</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <site>
+            <id>site-docs</id>
+            <url>file://${site-docs.url}</url>
+        </site>
+    </distributionManagement>
+
+    <inceptionYear>2015</inceptionYear>
 
     <prerequisites>
         <maven>3.3.3</maven>
@@ -15,10 +62,28 @@
 
     <properties>
         <!-- Eliminates the file encoding warning. Of course, all of your files
-        should probably be UTF-8 nowadays. -->
+        are probably be UTF-8 nowadays. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.url>https://github.com/dev9com/mvnrunnner</project.url>
+
+        <!-- See https://github.com/mike-ensor/clickconcepts-master-pom/blob/master/pom.xml -->
+        <site-docs.url>/${env.HOME}/sitedocs/${project.artifactId}</site-docs.url>
+        <!-- Best practice is to override this property in your settings.xml file; used for directory to hold cloned repository -->
+        <scmPublish.checkoutDirectory>${project.build.directory}/scmpublish</scmPublish.checkoutDirectory>
+        <!-- @OVERRIDE this property per each project -->
+        <repository.domain>github.com</repository.domain>
+        <!-- @OVERRIDE this property per each project -->
+        <repository.user>dev9com</repository.user>
+        <!-- @OVERRIDE this property per each project -->
+        <repository.name>mvnwatcher</repository.name>
+
     </properties>
+
+    <issueManagement>
+        <url>https://www.github.com/${repository.user}/${repository.name}/issues</url>
+        <system>Github Issues</system>
+    </issueManagement>
 
     <dependencies>
 
@@ -66,6 +131,20 @@
     </dependencies>
 
     <build>
+        <extensions>
+            <extension>
+                <!-- add support for ssh/scp -->
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.2</version>
+            </extension>
+            <extension>
+                <!-- Deploy to WEBdav servers -->
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>1.0</version>
+            </extension>
+        </extensions>
 
         <pluginManagement>
             <plugins>
@@ -130,6 +209,38 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.18.1</version>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.3</version>
+                    <configuration>
+                        <linksource>true</linksource>
+                        <failOnError>false</failOnError>
+                        <tags>
+                            <tag>
+                                <name>goal</name>
+                                <placement>X</placement>
+                            </tag>
+                            <tag>
+                                <name>phase</name>
+                                <placement>X</placement>
+                            </tag>
+                            <tag>
+                                <name>readonly</name>
+                                <placement>X</placement>
+                            </tag>
+                            <tag>
+                                <name>parameter</name>
+                                <placement>X</placement>
+                            </tag>
+                            <tag>
+                                <name>required</name>
+                                <placement>X</placement>
+                            </tag>
+                        </tags>
+                    </configuration>
+                </plugin>
             </plugins>
 
         </pluginManagement>
@@ -166,6 +277,8 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+
         </plugins>
     </build>
 
@@ -202,23 +315,58 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.3</version>
-                <configuration>
-                    <linksource>true</linksource>
-                    <failOnError>false</failOnError>
-                    <tags>
-                        <tag>
-                            <name>goal</name>
-                            <placement>X</placement>
-                        </tag>
-                        <tag>
-                            <name>phase</name>
-                            <placement>X</placement>
-                        </tag>
-                    </tags>
-                </configuration>
             </plugin>
 
         </plugins>
     </reporting>
+
+    <profiles>
+        <profile>
+            <id>push-site-to-github</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-publish-plugin</artifactId>
+                        <version>1.0</version>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <checkoutDirectory>${scmPublish.checkoutDirectory}</checkoutDirectory>
+                            <checkinComment>Publishing Site Docs for ${project.artifactId}:${project.version}
+                            </checkinComment>
+                            <!-- Plugins defaults to "target/staging" and since the distributionManagement section is a pain in the ass for site docs, this is easier -->
+                            <content>${project.reporting.outputDirectory}</content>
+                            <skipDeletedFiles>true</skipDeletedFiles>
+                            <pubScmUrl>scm:git:git@github.com:dev9com/mvnwatcher.git</pubScmUrl>
+                            <scmBranch>gh-pages</scmBranch>
+                        </configuration>
+                    </plugin>
+
+
+                    <!-- Publish site to Github -->
+                    <plugin>
+                        <groupId>com.github.github</groupId>
+                        <artifactId>site-maven-plugin</artifactId>
+                        <version>0.12</version>
+                        <configuration>
+                            <message>Creating site for ${project.version}</message>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                                <phase>site</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
