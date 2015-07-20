@@ -8,41 +8,6 @@ Maven Plugin for watching and restarting a build based on monitoring a file dire
 When used with a microservice project, gives you something that feels like a dynamic reload capability, 
 especially if running on a fast machine.  
 
-
-Current Working State
-=====================
-
-Ok, so this is a work in progress, but the concept basically works.  To try it out, do the following:
-
-Check out and install the project.  You'll want to do this:
-
-    mvn clean install
-   
-...to install the plugin.  Then, once you have build the project, cd into the sample project like this:
-
-    cd target/test-classes/sample-project
-
-...and start the watcher:
-
-    mvn watcher:watch
-   
-You should see the watcher start watching the demo project immediately.  You can open your browser to:
-
-    http://localhost:8080
-
-...and you should see Cool World and the date.
-
-Now, open up this file in your favorite IDE:
-
-    /mvnwatcher/target/test-classes/sample-project/src/main/java/demo/Example.java
-   
-...and play around with the output of the file.  For example, instead of Cool World change the text to Hello World.
-Save the file, and watch the output of the watcher terminal.  After a second or two, you should see the watcher notice
-the changes, shut down, rebuild, and relaunch your project!
-
-You'll also see an icon in your system tray showing the status of the build.  Select Quit from the system tray menu
-to exit the watcher.
-
 Usage
 =====
 
@@ -75,24 +40,9 @@ folder will cause the plugin to stop and then restart the build.
 As described in Configuration, below, the default configuration assumes you are running a Spring Boot project.  If
 you are just trying this out for the first time, the easiest thing to do is go to the 
 [Spring Boot project wizard site](http://start.spring.io/), leave the project defaults, except check "WS" (for web
-services).  Download the demo project, and do a `mvn clean install` to verify things. 
-
-
-Alternative Install
-===================
-
-Once the plugin is installed, you can run it from your build by adding the following to your project pom.xml:
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.dev9</groupId>
-                <artifactId>watcher-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </plugin>
-        </plugins>
-    </build>
-
+services).  Download the demo project, and do a `mvn clean install` to verify things.  Then, do a 
+`mvn watcher:watch` to start the watcher service.  You should see an icon appear in your system tray indicating the
+current status of the build.
 
 Configuration
 =============
