@@ -35,6 +35,8 @@ public class MvnWatcher {
 
     /**
      * Configure and start watching the project
+     *
+     * @throws IOException most likely if there are invalid paths
      */
     public void startUpWatcher() throws IOException {
         EventBus eventBus;
