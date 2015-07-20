@@ -93,7 +93,7 @@ Thanks & Inspiration
 
 [File watching basic implementation based on Guava EventBus.](http://codingjunkie.net/eventbus-watchservice/)
 
-[Gradle](https://docs.gradle.org/current/release-notes#continuous-build)
-[Grunt](https://github.com/gruntjs/grunt-contrib-watch)
-[Gulp](https://www.npmjs.com/package/gulp-watch)
-[Play](https://www.playframework.com/)
+* [Gradle](https://docs.gradle.org/current/release-notes#continuous-build)
+* [Grunt](https://github.com/gruntjs/grunt-contrib-watch)
+* [Gulp](https://www.npmjs.com/package/gulp-watch)
+* [Play](https://www.playframework.com/)
