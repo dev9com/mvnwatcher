@@ -102,13 +102,20 @@ The defaults for tasks are:
 Thanks!
 =======
 
-File watching basic implementation based on Guava EventBus per...
+File watching basic implementation based on Guava EventBus based on:
 
 http://codingjunkie.net/eventbus-watchservice/
 
 To Do
 =====
 
-* Add newly added directories to watch
+* Add newly added directories to watch (directories added after the watcher is launched are not monitored)
+* Support complex directory configuration (file patterns)
 
-Right now, directories added after the watcher is launched are not monitored.
+Inspiration
+===========
+
+Gradle: https://docs.gradle.org/current/release-notes#continuous-build
+Grunt: https://github.com/gruntjs/grunt-contrib-watch
+Gulp: https://www.npmjs.com/package/gulp-watch
+Play: https://www.playframework.com/
