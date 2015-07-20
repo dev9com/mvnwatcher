@@ -14,13 +14,16 @@ Usage
 Until this plugin is available from Maven central, you'll want to download and install it to your local repository
 the old fashioned way - build it from source.
 
+````bash
      git clone https://github.com/dev9com/mvnwatcher.git
      cd mvnwatcher
      mvn install
+````
 
 That will build a snapshot of the plugin in your local repository.  Then, add the following (or create) 
 your  [settings.xml](https://maven.apache.org/settings.html).  
 
+````xml
     <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
@@ -29,10 +32,13 @@ your  [settings.xml](https://maven.apache.org/settings.html).
             <pluginGroup>com.dev9</pluginGroup>
         </pluginGroups>
     </settings>
+````
 
 ...and then run to run plugin, either from inside your IDE or a terminal just type...
 
-    mvn watcher:watch
+````bash
+    mvn clean verify watcher:watch
+````    
     
 The plugin should launch and start monitoring your project.  Changes to files or directories inside the sources
 folder will cause the plugin to stop and then restart the build.
@@ -40,9 +46,8 @@ folder will cause the plugin to stop and then restart the build.
 As described in Configuration, below, the default configuration assumes you are running a Spring Boot project.  If
 you are just trying this out for the first time, the easiest thing to do is go to the 
 [Spring Boot project wizard site](http://start.spring.io/), leave the project defaults, except check "WS" (for web
-services).  Download the demo project, and do a `mvn clean install` to verify things.  Then, do a 
-`mvn watcher:watch` to start the watcher service.  You should see an icon appear in your system tray indicating the
-current status of the build.
+services).  Download the demo project, and do a `mvn clean install watcher:watch`.  You should see an icon appear in 
+your system tray indicating the current status of the build.
 
 Configuration
 =============
