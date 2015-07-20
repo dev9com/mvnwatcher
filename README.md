@@ -70,15 +70,15 @@ Configuration
 
 The configuration options include:
 
-*sourceDirectory* default-value="${project.build.sourceDirectory}"
+**sourceDirectory** default-value="${project.build.sourceDirectory}"
 
-*basedir* default-value="${project.basedir}"
+**basedir** default-value="${project.basedir}"
 
-*directory* default-value="${project.build.directory}"
+**directory** default-value="${project.build.directory}"
 
-*terminate* defaults to false, set this to true for the plugin to self-terminate (useful for testing)
+**terminate** defaults to false, set this to true for the plugin to self-terminate (useful for testing)
 
-* *tasks*
+**tasks**
   * executable
   * arguments
   * outputFile
@@ -89,8 +89,10 @@ The defaults for tasks are:
 ````java
     Task mvnBuild = new Task(
                 "mvn",
-                java.util.Arrays.asList("resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"),
-                Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner.log").toFile(),
+                java.util.Arrays.asList("resources:resources", 
+                     "compiler:compile", "jar:jar", "spring-boot:repackage"),
+                Paths.get(basedir.getAbsolutePath(), 
+                     "target", "mvnrunner.log").toFile(),
                 basedir.toPath());
 
         Task javaBuild = new Task(
@@ -101,21 +103,16 @@ The defaults for tasks are:
         );
 ````
 
-Thanks!
-=======
-
-File watching basic implementation based on Guava EventBus based on:
-
-http://codingjunkie.net/eventbus-watchservice/
-
 To Do
 =====
 
 * Add newly added directories to watch (directories added after the watcher is launched are not monitored)
 * Support complex directory configuration (file patterns)
 
-Inspiration
-===========
+Thanks & Inspiration
+====================
+
+[File watching basic implementation based on Guava EventBus.](http://codingjunkie.net/eventbus-watchservice/)
 
 [Gradle](https://docs.gradle.org/current/release-notes#continuous-build)
 [Grunt](https://github.com/gruntjs/grunt-contrib-watch)
