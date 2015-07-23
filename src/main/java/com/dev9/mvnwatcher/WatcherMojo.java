@@ -61,6 +61,15 @@ public class WatcherMojo extends AbstractMojo {
     public File directory;
 
     /**
+     * Typically, this is the target directory.
+     *
+     * @parameter default-value="${project.build.directory}/${project.build.finalName}.${project.packaging}"
+     * @readonly
+     */
+
+    public File finalName;
+
+    /**
      * Defaults to false.  Set to true for WatcherMojo to self-terminate (useful for testing)
      */
     @VisibleForTesting
@@ -70,6 +79,8 @@ public class WatcherMojo extends AbstractMojo {
      * @parameter
      */
     public List<Task> tasks;
+
+
 
     public void createTargetDirectoryIfNotExists() {
 
@@ -94,6 +105,9 @@ public class WatcherMojo extends AbstractMojo {
             sourceDirectory = Paths.get(base.toFile().getAbsolutePath(), "src", "main", "java").toFile();
         }
 
+        if(finalName == null)
+            finalName = Paths.get(base.toFile().getAbsolutePath(), "target", "demo-0.0.1-SNAPSHOT.jar").toFile();
+
         createTargetDirectoryIfNotExists();
 
         System.out.println("Using default spring-boot configuration.");
@@ -103,12 +117,12 @@ public class WatcherMojo extends AbstractMojo {
         Task mvnBuild = new Task(
                 "mvn",
                 java.util.Arrays.asList("resources:resources", "compiler:compile", "jar:jar", "spring-boot:repackage"),
-                Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner.log").toFile(),
+                Paths.get(basedir.getAbsolutePath(), "target", "mvnrunner-build.log").toFile(),
                 basedir.toPath());
 
         Task javaBuild = new Task(
                 "java",
-                java.util.Arrays.asList("-jar", "demo-0.0.1-SNAPSHOT.jar"),
+                java.util.Arrays.asList("-jar", finalName.getAbsolutePath()),
                 Paths.get(directory.getAbsolutePath(), "mvnrunner-app.log").toFile(),
                 directory.toPath()
         );
