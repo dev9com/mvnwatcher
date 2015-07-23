@@ -45,6 +45,14 @@ public class WatcherMojo extends AbstractMojo {
     public File sourceDirectory;
 
     /**
+     * Location of the resources.
+     *
+     * @parameter property="project.build.scriptSourceDirectory" default-value="${project.build.scriptSourceDirectory}"
+     * @required
+     */
+    public File scriptSourceDirectory;
+
+    /**
      * This is typically the root folder for the project, holding the pom.xml file.
      *
      * @parameter default-value="${project.basedir}"
@@ -81,7 +89,6 @@ public class WatcherMojo extends AbstractMojo {
     public List<Task> tasks;
 
 
-
     public void createTargetDirectoryIfNotExists() {
 
         if (!basedir.exists())
@@ -105,7 +112,11 @@ public class WatcherMojo extends AbstractMojo {
             sourceDirectory = Paths.get(base.toFile().getAbsolutePath(), "src", "main", "java").toFile();
         }
 
-        if(finalName == null)
+        if (scriptSourceDirectory == null) {
+            scriptSourceDirectory = Paths.get(base.toFile().getAbsolutePath(), "src", "main", "resources").toFile();
+        }
+
+        if (finalName == null)
             finalName = Paths.get(base.toFile().getAbsolutePath(), "target", "demo-0.0.1-SNAPSHOT.jar").toFile();
 
         createTargetDirectoryIfNotExists();
@@ -147,6 +158,16 @@ public class WatcherMojo extends AbstractMojo {
             log.info("Found: " + sourceDirectory.getAbsolutePath());
         }
 
+        if (scriptSourceDirectory != null) {
+            if (!scriptSourceDirectory.exists()) {
+                log.warn("Can't find resources directory " + scriptSourceDirectory);
+            } else {
+                log.info("Found: " + scriptSourceDirectory.getAbsolutePath());
+            }
+        } else {
+            log.warn("No resources directory specified.");
+        }
+
         createTargetDirectoryIfNotExists();
 
         MvnWatcher runner = null;
@@ -156,7 +177,11 @@ public class WatcherMojo extends AbstractMojo {
             if (tasks == null)
                 tasks = getDefaultTasks(basedir.toPath());
 
-            runner = new MvnWatcher(sourceDirectory.toPath(), basedir.toPath(), directory.toPath(), tasks);
+            List<Path> directoriesToWatch = new ArrayList<>();
+            directoriesToWatch.add(sourceDirectory.toPath());
+            directoriesToWatch.add(scriptSourceDirectory.toPath());
+
+            runner = new MvnWatcher(directoriesToWatch, basedir.toPath(), directory.toPath(), tasks);
             runner.startUpWatcher();
             runner.terminate = terminate;
         } catch (IOException e) {

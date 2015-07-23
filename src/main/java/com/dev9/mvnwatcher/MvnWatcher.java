@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public class MvnWatcher {
 
-    private final Path sourcePath;
+    private final List<Path> pathsToWatch;
     private final Path projectPath;
     private final Path targetPath;
     private final List<Task> tasks;
@@ -26,8 +26,9 @@ public class MvnWatcher {
      */
     public boolean terminate = false;
 
-    public MvnWatcher(Path sourcePath, Path projectPath, Path targetPath, List<Task> tasks) {
-        this.sourcePath = Objects.requireNonNull(sourcePath);
+    public MvnWatcher(List<Path> pathsToWatch, Path projectPath, Path targetPath, List<Task> tasks) {
+        this.pathsToWatch = Objects.requireNonNull(pathsToWatch);
+
         this.projectPath = Objects.requireNonNull(projectPath);
         this.targetPath = Objects.requireNonNull(targetPath);
         this.tasks = Objects.requireNonNull(tasks);
@@ -44,7 +45,11 @@ public class MvnWatcher {
         FileChangeSubscriber subscriber;
 
         eventBus = new EventBus();
-        dirWatcher = new DirectoryEventWatcherImpl(eventBus, sourcePath);
+        dirWatcher = new DirectoryEventWatcherImpl(eventBus);
+
+        for (Path p : pathsToWatch)
+            dirWatcher.add(p);
+
         dirWatcher.start();
         runner = new MvnRunner(projectPath, targetPath, tasks);
         subscriber = new FileChangeSubscriber(dirWatcher, runner);

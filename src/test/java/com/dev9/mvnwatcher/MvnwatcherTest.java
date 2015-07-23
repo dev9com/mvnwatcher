@@ -1,12 +1,13 @@
 package com.dev9.mvnwatcher;
 
-import com.dev9.mvnwatcher.WatcherMojo;
 import org.junit.After;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MvnwatcherTest {
 
@@ -20,7 +21,10 @@ public class MvnwatcherTest {
         Path targetPath = Paths.get(cwd, "target", "test-classes", "sample-project", "target");
         Path sourcePath = Paths.get(cwd, "target", "test-classes", "sample-project", "src", "main", "java");
 
-        runner = new MvnWatcher(sourcePath, projectPath, targetPath, new WatcherMojo().getDefaultTasks(projectPath));
+        List<Path> watchPath = new ArrayList<>();
+        watchPath.add(sourcePath);
+
+        runner = new MvnWatcher(watchPath, projectPath, targetPath, new WatcherMojo().getDefaultTasks(projectPath));
 
         runner.startUpWatcher();
     }

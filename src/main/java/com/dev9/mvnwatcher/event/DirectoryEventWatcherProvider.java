@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 
 /**
@@ -15,11 +16,11 @@ import java.nio.file.Paths;
  */
 
 public class DirectoryEventWatcherProvider implements Provider<DirectoryEventWatcher> {
-    
+
     private EventBus eventBus;
-    private String  startPath;
-    
-    
+    private String startPath;
+
+
     @Inject
     public DirectoryEventWatcherProvider(EventBus eventBus, @Named("START_PATH") String startPath) {
         this.eventBus = eventBus;
@@ -28,6 +29,15 @@ public class DirectoryEventWatcherProvider implements Provider<DirectoryEventWat
 
     @Override
     public DirectoryEventWatcher get() {
-        return new DirectoryEventWatcherImpl(eventBus, Paths.get(startPath));
+
+        DirectoryEventWatcherImpl directoryEventWatcher = null;
+        try {
+            directoryEventWatcher = new DirectoryEventWatcherImpl(eventBus);
+            directoryEventWatcher.add(Paths.get(startPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return directoryEventWatcher;
     }
 }

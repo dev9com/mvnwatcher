@@ -25,20 +25,26 @@ public class DirectoryEventWatcherImpl implements DirectoryEventWatcher {
     private EventBus eventBus;
     private WatchService watchService;
     private volatile boolean keepWatching = true;
-    private Path startPath;
 
-
-    public DirectoryEventWatcherImpl(EventBus eventBus, Path startPath) {
+    public DirectoryEventWatcherImpl(EventBus eventBus) throws IOException {
         this.eventBus = Objects.requireNonNull(eventBus);
-        this.startPath = Objects.requireNonNull(startPath);
+        if (watchService == null) {
+            watchService = FileSystems.getDefault().newWatchService();
+        }
     }
 
     @Override
     public void start() throws IOException {
-        initWatchService();
-        registerDirectories();
         createWatchTask();
         startWatching();
+    }
+
+    public void add(Path p) throws IOException {
+        Objects.requireNonNull(p);
+        if (!p.toFile().exists())
+            throw new IllegalArgumentException("Path " + p.toFile().getAbsolutePath() + " does not actually exist.");
+
+        Files.walkFileTree(p, new WatchServiceRegisteringVisitor());
     }
 
     @Override
@@ -96,25 +102,13 @@ public class DirectoryEventWatcherImpl implements DirectoryEventWatcher {
         new Thread(watchTask).start();
     }
 
-    private void registerDirectories() throws IOException {
-        Files.walkFileTree(startPath, new WatchServiceRegisteringVisitor());
-    }
-
-    private void initWatchService() throws IOException {
-        if (watchService == null) {
-            watchService = FileSystems.getDefault().newWatchService();
-        }
-    }
-
-    public void addPath(Path path) throws IOException {
-        System.out.println("Watching: " + path.toAbsolutePath());
-        path.register(watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
-    }
-
     private class WatchServiceRegisteringVisitor extends SimpleFileVisitor<Path> {
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-            addPath(dir);
+            Objects.requireNonNull(dir);
+            Objects.requireNonNull(watchService);
+
+            dir.register(watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
             return FileVisitResult.CONTINUE;
         }
     }
