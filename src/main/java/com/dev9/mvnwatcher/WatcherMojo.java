@@ -39,7 +39,7 @@ public class WatcherMojo extends AbstractMojo {
     /**
      * Location of the Java sources.
      *
-     * @parameter property="project.build.sourceDirectory" default-value="${project.build.sourceDirectory}"
+     * @parameter default-value="${project.build.sourceDirectory}"
      * @required
      */
     public File sourceDirectory;
@@ -47,10 +47,10 @@ public class WatcherMojo extends AbstractMojo {
     /**
      * Location of the resources.
      *
-     * @parameter property="project.build.scriptSourceDirectory" default-value="${project.build.scriptSourceDirectory}"
+     * @parameter default-value="${project.build.resources[0].directory}"
      * @required
      */
-    public File scriptSourceDirectory;
+    public File resourcesDirectory;
 
     /**
      * This is typically the root folder for the project, holding the pom.xml file.
@@ -112,8 +112,8 @@ public class WatcherMojo extends AbstractMojo {
             sourceDirectory = Paths.get(base.toFile().getAbsolutePath(), "src", "main", "java").toFile();
         }
 
-        if (scriptSourceDirectory == null) {
-            scriptSourceDirectory = Paths.get(base.toFile().getAbsolutePath(), "src", "main", "resources").toFile();
+        if (resourcesDirectory == null) {
+            resourcesDirectory = Paths.get(base.toFile().getAbsolutePath(), "src", "main", "resources").toFile();
         }
 
         if (finalName == null)
@@ -158,11 +158,11 @@ public class WatcherMojo extends AbstractMojo {
             log.info("Found: " + sourceDirectory.getAbsolutePath());
         }
 
-        if (scriptSourceDirectory != null) {
-            if (!scriptSourceDirectory.exists()) {
-                log.warn("Can't find resources directory " + scriptSourceDirectory);
+        if (resourcesDirectory != null) {
+            if (!resourcesDirectory.exists()) {
+                log.warn("Can't find resources directory " + resourcesDirectory);
             } else {
-                log.info("Found: " + scriptSourceDirectory.getAbsolutePath());
+                log.info("Found: " + resourcesDirectory.getAbsolutePath());
             }
         } else {
             log.warn("No resources directory specified.");
@@ -179,7 +179,7 @@ public class WatcherMojo extends AbstractMojo {
 
             List<Path> directoriesToWatch = new ArrayList<>();
             directoriesToWatch.add(sourceDirectory.toPath());
-            directoriesToWatch.add(scriptSourceDirectory.toPath());
+            directoriesToWatch.add(resourcesDirectory.toPath());
 
             runner = new MvnWatcher(directoriesToWatch, basedir.toPath(), directory.toPath(), tasks);
             runner.startUpWatcher();
