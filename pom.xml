@@ -262,6 +262,26 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <version>2.0.0</version>
+                <executions>
+                    <execution>
+                        <id>setup-test-project</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>process-test-classes</phase>
+                        <configuration>
+                            <projectsDirectory>${project.build.directory}/test-classes/sample-project</projectsDirectory>
+                            <failIfNoProjects>true</failIfNoProjects>
+                            <pom>${project.build.directory}/test-classes/sample-project/pom.xml</pom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
 
                 <!-- It may be strange to configure this plugin in build, but that's where
                 the dependency config goes. This configuration adds markdown support to the
@@ -321,52 +341,52 @@
     </reporting>
 
     <!--<profiles>-->
-        <!--<profile>-->
-            <!--<id>push-site-to-github</id>-->
-            <!--<activation>-->
-                <!--<activeByDefault>false</activeByDefault>-->
-            <!--</activation>-->
-            <!--<build>-->
-                <!--<plugins>-->
-                    <!--<plugin>-->
-                        <!--<groupId>org.apache.maven.plugins</groupId>-->
-                        <!--<artifactId>maven-scm-publish-plugin</artifactId>-->
-                        <!--<version>1.0</version>-->
-                        <!--<inherited>true</inherited>-->
-                        <!--<configuration>-->
-                            <!--<checkoutDirectory>${scmPublish.checkoutDirectory}</checkoutDirectory>-->
-                            <!--<checkinComment>Publishing Site Docs for ${project.artifactId}:${project.version}-->
-                            <!--</checkinComment>-->
-                            <!--&lt;!&ndash; Plugins defaults to "target/staging" and since the distributionManagement section is a pain in the ass for site docs, this is easier &ndash;&gt;-->
-                            <!--<content>${project.reporting.outputDirectory}</content>-->
-                            <!--<skipDeletedFiles>true</skipDeletedFiles>-->
-                            <!--<pubScmUrl>scm:git:git@github.com:dev9com/mvnwatcher.git</pubScmUrl>-->
-                            <!--<scmBranch>gh-pages</scmBranch>-->
-                        <!--</configuration>-->
-                    <!--</plugin>-->
+    <!--<profile>-->
+    <!--<id>push-site-to-github</id>-->
+    <!--<activation>-->
+    <!--<activeByDefault>false</activeByDefault>-->
+    <!--</activation>-->
+    <!--<build>-->
+    <!--<plugins>-->
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-scm-publish-plugin</artifactId>-->
+    <!--<version>1.0</version>-->
+    <!--<inherited>true</inherited>-->
+    <!--<configuration>-->
+    <!--<checkoutDirectory>${scmPublish.checkoutDirectory}</checkoutDirectory>-->
+    <!--<checkinComment>Publishing Site Docs for ${project.artifactId}:${project.version}-->
+    <!--</checkinComment>-->
+    <!--&lt;!&ndash; Plugins defaults to "target/staging" and since the distributionManagement section is a pain in the ass for site docs, this is easier &ndash;&gt;-->
+    <!--<content>${project.reporting.outputDirectory}</content>-->
+    <!--<skipDeletedFiles>true</skipDeletedFiles>-->
+    <!--<pubScmUrl>scm:git:git@github.com:dev9com/mvnwatcher.git</pubScmUrl>-->
+    <!--<scmBranch>gh-pages</scmBranch>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
 
 
-                    <!--&lt;!&ndash; Publish site to Github &ndash;&gt;-->
-                    <!--<plugin>-->
-                        <!--<groupId>com.github.github</groupId>-->
-                        <!--<artifactId>site-maven-plugin</artifactId>-->
-                        <!--<version>0.12</version>-->
-                        <!--<configuration>-->
-                            <!--<message>Creating site for ${project.version}</message>-->
-                        <!--</configuration>-->
-                        <!--<executions>-->
-                            <!--<execution>-->
-                                <!--<goals>-->
-                                    <!--<goal>site</goal>-->
-                                <!--</goals>-->
-                                <!--<phase>site</phase>-->
-                            <!--</execution>-->
-                        <!--</executions>-->
-                    <!--</plugin>-->
+    <!--&lt;!&ndash; Publish site to Github &ndash;&gt;-->
+    <!--<plugin>-->
+    <!--<groupId>com.github.github</groupId>-->
+    <!--<artifactId>site-maven-plugin</artifactId>-->
+    <!--<version>0.12</version>-->
+    <!--<configuration>-->
+    <!--<message>Creating site for ${project.version}</message>-->
+    <!--</configuration>-->
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--<goals>-->
+    <!--<goal>site</goal>-->
+    <!--</goals>-->
+    <!--<phase>site</phase>-->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--</plugin>-->
 
-                <!--</plugins>-->
-            <!--</build>-->
-        <!--</profile>-->
+    <!--</plugins>-->
+    <!--</build>-->
+    <!--</profile>-->
     <!--</profiles>-->
 
 </project>

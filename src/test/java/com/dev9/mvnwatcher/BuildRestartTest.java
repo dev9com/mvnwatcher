@@ -29,7 +29,7 @@ public class BuildRestartTest {
 
         runner.start();
 
-        Thread.sleep(5000);
+        Thread.sleep(10000);
 
         assertThat(runner.status()).isEqualTo("Ready:OK");
     }
