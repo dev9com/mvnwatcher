@@ -13,7 +13,7 @@ public class BuildRestartTest {
 
     private MvnRunner runner;
 
-    @Test
+    @Test(timeout = 30000)
     public void simpleBootTest() throws IOException, InterruptedException {
         String cwd = Paths.get("").toAbsolutePath().toString();
 
@@ -25,13 +25,12 @@ public class BuildRestartTest {
 
         assertThat(targetPath).exists();
 
-        MvnRunner runner = new MvnRunner(projectPath, targetPath, new WatcherMojo().getDefaultTasks(projectPath));
+        runner = new MvnRunner(projectPath, targetPath, new WatcherMojo().getDefaultTasks(projectPath));
 
         runner.start();
 
-        Thread.sleep(10000);
-
-        assertThat(runner.status()).isEqualTo("Ready:OK");
+        while (runner.status().compareToIgnoreCase("Ready:OK") != 0)
+            Thread.sleep(500);
     }
 
     @After
