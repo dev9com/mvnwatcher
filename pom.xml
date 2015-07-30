@@ -33,7 +33,6 @@
         <connection>scm:git:git@github.com:dev9com/mvnwatcher.git</connection>
         <developerConnection>scm:git:git@github.com:dev9com/mvnwatcher.git</developerConnection>
         <url>git@github.com:dev9com/mvnwatcher.git</url>
-    <tag>HEAD</tag>
   </scm>
 
     <distributionManagement>
