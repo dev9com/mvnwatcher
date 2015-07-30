@@ -345,24 +345,24 @@
             </activation>
             <build>
                 <plugins>
-                    <!--<plugin>-->
-                        <!--<groupId>org.apache.maven.plugins</groupId>-->
-                        <!--<artifactId>maven-release-plugin</artifactId>-->
-                        <!--<version>2.5.2</version>-->
-                        <!--<executions>-->
-                            <!--<execution>-->
-                                <!--<id>release-setup</id>-->
-                                <!--<phase>verify</phase>-->
-                                <!--<goals>-->
-                                    <!--<goal>prepare</goal>-->
-                                    <!--<goal>perform</goal>-->
-                                <!--</goals>-->
-                                <!--<configuration>-->
-                                    <!--<preparationGoals />-->
-                                <!--</configuration>-->
-                            <!--</execution>-->
-                        <!--</executions>-->
-                    <!--</plugin>-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.2</version>
+                        <executions>
+                            <execution>
+                                <id>release-setup</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>prepare</goal>
+                                    <goal>perform</goal>
+                                </goals>
+                                <configuration>
+                                    <preparationGoals>clean</preparationGoals>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 
                     <!-- Used to push a build to Nexus, which can then be used to push to Central. -->
                     <plugin>
