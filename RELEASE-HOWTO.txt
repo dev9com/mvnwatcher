@@ -1,11 +1,6 @@
 
 This project releases builds to Maven Central via Nexus.
 
-
-Here's the release process:
-
-http://axelfontaine.com/blog/final-nail.html
-
 To avoid polluting Central with a ton of builds, we are doing releases manually via this command-line:
 
-mvn versions:set -DnewVersion=$BUILD_NUMBER deploy scm:tag
+mvn --batch-mode -Prelease-to-central deploy
