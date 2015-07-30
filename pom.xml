@@ -9,7 +9,7 @@
     <groupId>com.dev9</groupId>
     <artifactId>watcher-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1-SNAPSHOT</version>
+    <version>2-SNAPSHOT</version>
 
     <licenses>
         <license>
@@ -33,7 +33,7 @@
         <connection>scm:git:git@github.com:dev9com/mvnwatcher.git</connection>
         <developerConnection>scm:git:git@github.com:dev9com/mvnwatcher.git</developerConnection>
         <url>git@github.com:dev9com/mvnwatcher.git</url>
-    </scm>
+  </scm>
 
     <distributionManagement>
         <repository>
@@ -345,24 +345,24 @@
             </activation>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>2.5.2</version>
-                        <executions>
-                            <execution>
-                                <id>release-setup</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>prepare</goal>
-                                    <goal>perform</goal>
-                                </goals>
-                                <configuration>
-                                    <preparationGoals></preparationGoals>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+                    <!--<plugin>-->
+                        <!--<groupId>org.apache.maven.plugins</groupId>-->
+                        <!--<artifactId>maven-release-plugin</artifactId>-->
+                        <!--<version>2.5.2</version>-->
+                        <!--<executions>-->
+                            <!--<execution>-->
+                                <!--<id>release-setup</id>-->
+                                <!--<phase>verify</phase>-->
+                                <!--<goals>-->
+                                    <!--<goal>prepare</goal>-->
+                                    <!--<goal>perform</goal>-->
+                                <!--</goals>-->
+                                <!--<configuration>-->
+                                    <!--<preparationGoals />-->
+                                <!--</configuration>-->
+                            <!--</execution>-->
+                        <!--</executions>-->
+                    <!--</plugin>-->
 
                     <!-- Used to push a build to Nexus, which can then be used to push to Central. -->
                     <plugin>
