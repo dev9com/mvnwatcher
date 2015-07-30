@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <name>mvnwatcher</name>
@@ -33,8 +34,8 @@
         <connection>scm:git:git@github.com:dev9com/mvnwatcher.git</connection>
         <developerConnection>scm:git:git@github.com:dev9com/mvnwatcher.git</developerConnection>
         <url>git@github.com:dev9com/mvnwatcher.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <distributionManagement>
         <repository>
@@ -272,7 +273,8 @@
                         </goals>
                         <phase>process-test-classes</phase>
                         <configuration>
-                            <projectsDirectory>${project.build.directory}/test-classes/sample-project</projectsDirectory>
+                            <projectsDirectory>${project.build.directory}/test-classes/sample-project
+                            </projectsDirectory>
                             <failIfNoProjects>true</failIfNoProjects>
                             <pom>${project.build.directory}/test-classes/sample-project/pom.xml</pom>
                         </configuration>
@@ -323,6 +325,12 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -363,6 +371,36 @@
 
         </plugins>
     </reporting>
+
+
+    <profiles>
+        <profile>
+            <id>release-to-central</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.2</version>
+                        <executions>
+                            <execution>
+                                <id>release-setup</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>prepare</goal>
+                                    <goal>perform</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
 
     <!--<profiles>-->
     <!--<profile>-->
