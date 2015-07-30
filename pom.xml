@@ -296,6 +296,18 @@
                 </dependencies>
             </plugin>
 
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>nexus</serverId>
+                    <nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2</nexusUrl>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -338,50 +350,31 @@
     </reporting>
 
 
-    <profiles>
-        <profile>
-            <id>release-to-central</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>2.5.2</version>
-                        <executions>
-                            <execution>
-                                <id>release-setup</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>prepare</goal>
-                                    <goal>perform</goal>
-                                </goals>
-                                <configuration>
-                                    <preparationGoals>clean</preparationGoals>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+    <!--<profiles>-->
+        <!--<profile>-->
+            <!--<id>release-to-central</id>-->
+            <!--<activation>-->
+                <!--<activeByDefault>false</activeByDefault>-->
+            <!--</activation>-->
+            <!--<build>-->
+                <!--<plugins>-->
+                    <!--&lt;!&ndash; Used to push a build to Nexus, which can then be used to push to Central. &ndash;&gt;-->
+                    <!--<plugin>-->
+                        <!--<groupId>org.sonatype.plugins</groupId>-->
+                        <!--<artifactId>nexus-staging-maven-plugin</artifactId>-->
+                        <!--<version>1.6.3</version>-->
+                        <!--<extensions>true</extensions>-->
+                        <!--<configuration>-->
+                            <!--<serverId>nexus</serverId>-->
+                            <!--<nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2</nexusUrl>-->
+                        <!--</configuration>-->
+                    <!--</plugin>-->
 
-                    <!-- Used to push a build to Nexus, which can then be used to push to Central. -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.3</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>nexus</serverId>
-                            <nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2</nexusUrl>
-                        </configuration>
-                    </plugin>
+                <!--</plugins>-->
+            <!--</build>-->
+        <!--</profile>-->
 
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
+    <!--</profiles>-->
 
     <!--<profiles>-->
     <!--<profile>-->

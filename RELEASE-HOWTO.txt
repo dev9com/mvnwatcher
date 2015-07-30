@@ -3,4 +3,4 @@ This project releases builds to Maven Central via Nexus.
 
 To avoid polluting Central with a ton of builds, we are doing releases manually via this command-line:
 
-mvn --batch-mode -Prelease-to-central deploy
+mvn --batch-mode -Prelease-to-central release:prepare release:perform deploy
