@@ -3,6 +3,7 @@ package com.dev9.mvnwatcher;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 class MvnMonitor implements Runnable {
 
@@ -33,7 +34,11 @@ class MvnMonitor implements Runnable {
             notifier.update("Directory for build step " + i + " : " + pb.directory().getAbsolutePath() + "...",
                     MvnSystemNotifications.Status.WORKING);
 
-            notifier.update("Starting " + pb.command().get(0) + "...",
+            String commands = pb.command().stream()
+                    .map(s -> s.toString())
+                    .collect(Collectors.joining(" "));
+
+            notifier.update("Starting " + commands + "...",
                     MvnSystemNotifications.Status.WORKING);
 
             Process p;
@@ -74,19 +79,24 @@ class MvnMonitor implements Runnable {
         notifier.update("Directory for monitored build : " + finalConfig.directory().getAbsolutePath() + "...",
                 MvnSystemNotifications.Status.WORKING);
 
+        String commands = finalConfig.command().stream()
+                .map(s -> s.toString())
+                .collect(Collectors.joining(" "));
+
         try {
 
             if (watchedProcess == null) {
-                notifier.update("Starting process (a) " + finalConfig.command().get(0) + "...",
+                notifier.update("Starting process " + commands + "...",
                         MvnSystemNotifications.Status.WORKING);
                 watchedProcess = finalConfig.start();
                 notifier.update("Ready",
                         MvnSystemNotifications.Status.OK);
 
             } else if (!watchedProcess.isAlive()) {
-                notifier.update("Starting process (b) " + finalConfig.command().get(0) + "...",
+                notifier.update("Restarting process " + commands + "...",
                         MvnSystemNotifications.Status.WORKING);
                 watchedProcess = finalConfig.start();
+
                 notifier.update("Ready",
                         MvnSystemNotifications.Status.OK);
             }
@@ -150,6 +160,9 @@ class MvnMonitor implements Runnable {
     }
 
     public String status() {
+        if(notifier == null)
+            return "Initializing monitor...";
+
         return notifier.status();
     }
 }
