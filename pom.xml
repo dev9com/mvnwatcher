@@ -9,7 +9,7 @@
     <groupId>com.dev9</groupId>
     <artifactId>watcher-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>5</version>
+    <version>1.6</version>
 
     <licenses>
         <license>
@@ -364,10 +364,27 @@
                                 <id>sign-artifacts</id>
                                 <phase>verify</phase>
                                 <goals>
-                                    <goal>sign</goal>
+                                    <goal>sign-and-deploy-file</goal>
                                 </goals>
                                 <configuration>
-                                    <keyname>will.iverson@dev9.com</keyname>
+                                    <keyname>9B64859A</keyname>
+                                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                                    <pomFile>pom.xml</pomFile>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <groupId>${project.groupId}</groupId>
+                                    <version>${project.version}</version>
+
+                                    <file>target/${project.artifactId}-${project.version}.jar</file>
+                                    <files>
+                                        target/${project.artifactId}-${project.version}-sources.jar,target/${project.artifactId}-${project.version}-javadoc.jar
+                                    </files>
+                                    <types>jar,jar</types>
+                                    <classifiers>sources,javadoc</classifiers>
+                                    <repositoryId>nexus</repositoryId>
+                                    <gpgArguments>
+                                        <argument>--armor</argument>
+                                        <argument>--detach-sig</argument>
+                                    </gpgArguments>
                                 </configuration>
                             </execution>
                         </executions>
