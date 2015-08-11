@@ -11,8 +11,45 @@ especially if running on a fast machine.
 Usage
 =====
 
-Until this plugin is available from Maven central, you'll want to download and install it to your local repository
-the old fashioned way - build it from source.
+Add the following to your pom.xml:
+
+````xml
+    <profiles>
+        <profile>
+            <id>watch</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.dev9</groupId>
+                        <artifactId>watcher-maven-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>watch</id>
+                                <goals>
+                                    <goal>watch</goal>
+                                </goals>
+                                <phase>verify</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+````
+
+And then execute the command:
+
+    mvn clean verify -Pwatch
+
+This will automatically start the project in watch mode, assuming that the project builds correctly.  You can
+stop watching by either stopping from the system menu, or by pressing ctl-C or otherwise terminating the build.
+
+Development
+===========
+
+Here is all you need to start hacking:
 
 ````bash
      git clone https://github.com/dev9com/mvnwatcher.git
@@ -45,7 +82,7 @@ folder will cause the plugin to stop and then restart the build.  You can easily
 the system tray icon (green happy = ready, blue gear = restarting build, red exclaimation = build failing for some 
 reason).
 
-As described in Configuration, below, the default configuration assumes you are running a Spring Boot project.  If
+As described in Configuration, the default configuration assumes you are running a Spring Boot project.  If
 you are just trying this out for the first time, the easiest thing to do is go to the 
 [Spring Boot project wizard site](http://start.spring.io/), leave the project defaults, except check "WS" (for web
 services).  Download the demo project, and do a `mvn clean install watcher:watch`.  You should see an icon appear in 
@@ -89,18 +126,24 @@ The defaults for tasks are:
         );
 ````
 
-To Do
-=====
-
-* Add newly added directories to watch (directories added after the watcher is launched are not monitored)
-* Support complex directory configuration (file patterns)
-
 Thanks & Inspiration
 ====================
 
-[File watching basic implementation based on Guava EventBus.](http://codingjunkie.net/eventbus-watchservice/)
-
+* [File watching implementation based on Guava EventBus](http://codingjunkie.net/eventbus-watchservice/)
 * [Gradle](https://docs.gradle.org/current/release-notes#continuous-build)
 * [Grunt](https://github.com/gruntjs/grunt-contrib-watch)
 * [Gulp](https://www.npmjs.com/package/gulp-watch)
 * [Play](https://www.playframework.com/)
+
+Spring Boot already has a class-reload framework, which does something a bit different - it swaps in byte-cde at runtime
+when it detects a code change.  It can also be configured to swap in different templates.  It's well worth checking out
+the standard [Spring Boot hot reload features](http://docs.spring.io/spring-boot/docs/current/reference/html/howto-hotswapping.html),
+although it's more complex to set up.
+
+[JRebel](http://zeroturnaround.com/software/jrebel/) does something similar.
+
+Mvnwatcher is different - it just flat restarts the server when it notices changes.
+
+You may want to start with mvnwatcher, and then if you start getting impatient with the turnaround time, investigate
+the Spring Boot hot reload features instead if you feel that rebooting the whole Spring Boot app is too slow.  Of course,
+you might be getting away from a "microservice" then...  ;)
